@@ -10,16 +10,17 @@ import Register from '@/pages/register';
 import VerifyEmail from '@/pages/verify-email';
 import ForgotPassword from '@/pages/forgot-password';
 import { useAuth } from '@/hooks/auth';
+import { Index } from '@/pages/task/Index';
 
 export default function App() {
-    const { user } = useAuth();
+    const { user,login } = useAuth();
     return (
         <Routes>
-            <Route element={<AppLayout user={user} header={<>ATEST</>}/>}>
-                <Route path="/"  element={<Home user={user} />} />
+            <Route path="/" element={<AppLayout user={user} header={<>ATEST</>}/>}>
+                <Route index element={<Home user={user} />} />
                 <Route path="dashboard" element={<Dashboard user={user} />} />
                 <Route path="task" element={<Dashboard user={user} />} />
-                <Route path="login" element={<Login />} />
+                <Route path="login" element={<Login login={login}/>} />
                 <Route path="register" element={<Register />} />
                 <Route path="verify-email" element={<VerifyEmail />} />
                 <Route path="forgot-password" element={<ForgotPassword  />} />

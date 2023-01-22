@@ -11,11 +11,11 @@ import { useAuth } from '@/hooks/auth';
 import { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
-const Login = () => {
+const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string, login:(param:any)=>any}) => {
 
     const { login } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard',
+        redirectIfAuthenticated: redirectIfAuthenticated??'/dashboard',
     });
 
     const [email, setEmail] = useState('');

@@ -3,5 +3,6 @@ export interface Task{
     title:string,
     description: string,
     status:number,
+    parent_task_id?:number,
     parent_task?:Task,
 }

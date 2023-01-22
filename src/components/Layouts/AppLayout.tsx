@@ -1,26 +1,30 @@
 import Navigation from '@/components/Layouts/Navigation';
-import { useAuth } from '@/hooks/auth';
+
 import { Outlet } from "react-router-dom";
-import type { User } from '@/hooks/auth';
-import GuestLayout from './GuestLayout';
+import type { User } from '@/models/User';
+import { ErrorBoundary } from './ErrorBoundary';
 type Params = {
     header: React.ReactNode,
     user: User | undefined;
 };
-const AppLayout = ({ header, user }: Params) => {
+const AppLayout = ({ user }: Params) => {
 
     return user
         ? <div className="min-h-screen bg-gray-100">
             <Navigation user={user} />
-            <header className="bg-white shadow">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {header}
-                </div>
-            </header>
 
-            <main><Outlet /></main>
+            <main>
+                <ErrorBoundary>
+                    <Outlet />
+                </ErrorBoundary></main>
         </div>
-        : <GuestLayout />;
+        : <div>
+            <div className="font-sans text-gray-900 antialiased">
+                <ErrorBoundary>
+                    <Outlet />
+                </ErrorBoundary>
+            </div>
+        </div>;
 };
 
 export default AppLayout;

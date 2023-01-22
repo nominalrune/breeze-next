@@ -1,59 +1,50 @@
 import useSWR from 'swr';
 import axios from '@/lib/axios';
 import { useState, useEffect } from 'react';
-import { redirect, useParams, useNavigate } from "react-router-dom";
-import {User} from '@/models/User';
-
+import { useParams, useNavigate } from "react-router-dom";
+import type { User } from '@/models/User';
 
 type Params = { middleware?: string, redirectIfAuthenticated?: string; };
-export const useAuth = ({ middleware, redirectIfAuthenticated = "/" }: Params = {}) => {
+export const useAuth = ({ middleware, redirectIfAuthenticated = "/dashboard" }: Params = {}) => {
     const navigate = useNavigate();
-    const { data: user, error, mutate } = useSWR('/api/user', () =>
-        axios
-            .get('/api/user')
-            .then(res => res.data)
-            .catch(error => {
-                if (error.response.status === 409) { navigate('/verify-email'); }
-                throw new Error(error);
-            }), {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false
-    });
+    const [user, setUser] = useState<User>();
+
+            // , {
+    //     revalidateIfStale: false,
+    //     revalidateOnFocus: false,
+    //     revalidateOnReconnect: false
+    // });
 
     const csrf = () => axios.get('/sanctum/csrf-cookie');
 
     const register = async ({ setErrors, ...props }: any) => { //FIXME
         await csrf();
-
         setErrors([]);
-
         axios
             .post('/register', props)
-            .then(() => mutate())
+            .then(res => setUser(res.data))
             .catch(error => {
-                if (error.response.status !== 422) throw new Error(error);
-
-                setErrors(error.response.data.errors);
+                if (error.response.status === 422){ setErrors("The email is already taken");}
             });
     };
 
     const login = async ({ setErrors, setStatus, ...props }: any) => { //FIXME
         await csrf();
+        console.log("csrf fetched")
         setErrors([]);
         setStatus(null);
         try {
-            await axios.post('/login', props);
-            console.log("login fetch finished")
-            await mutate();
+            console.log("login fetch started")
+            const res= await axios.post('/login', props);
+            console.log("login fetch finished",res)
+            setUser(res.data);
             console.log("mutate finished")
 
-            // navigate(redirectIfAuthenticated);
-            navigate("/dashboard");
+            navigate(redirectIfAuthenticated);
             console.log("redirect finished")
         } catch (error) {
-            // if (error.response.status === 422){setErrors(error.response.data.errors)}
-            throw error;
+            console.error({error});
+            // if (error.response.status === 422){setErrors()}
             // setErrors(error.response.data.errors);
         }
     };
@@ -102,9 +93,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated = "/" }: Params = 
     };
 
     const logout = async () => {
-        if (!error) {
+        if (user) {
             await axios.post('/logout')
-            await mutate();
+            setUser(undefined);
         }
         navigate('/');
     };
@@ -119,8 +110,8 @@ export const useAuth = ({ middleware, redirectIfAuthenticated = "/" }: Params = 
         ) {
             navigate(redirectIfAuthenticated);
         }
-        if (middleware === 'auth' && error) { logout(); }
-    }, [user, error]);
+        if (middleware === 'auth' && !user) { logout(); }
+    }, [user]);
 
     return {
         user,

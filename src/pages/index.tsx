@@ -2,6 +2,7 @@ import 'tailwindcss/tailwind.css'
 import * as React from "react";
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import type{ User } from '@/hooks/auth'
+import Button from '@/components/Button';
 
 export default function Home({user}:{user:User}) {
     return (
@@ -22,18 +23,19 @@ export default function Home({user}:{user:User}) {
                 </div>
 
                 <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
-                    <div className="flex justify-center pt-8 sm:justify-start sm:pt-0">
-                        <Link
+                    <div className="flex justify-center gap-5 pt-8 sm:justify-start sm:pt-0">
+                        <Button className='bg-gray-200 border-2 border-gray-300 hover:bg-gray-300 '><Link
                                 to="/login"
-                                className="text-sm text-gray-700 underline">
+                                className="text-sm text-gray-700 no-underline">
                                 Login
-                            </Link>
+                            </Link></Button>
 
-                            <Link
+                            <Button className='bg-gray-200 border-2 border-gray-300 hover:bg-gray-300 '>
+                                <Link
                                 to="/register"
-                                className="ml-4 text-sm text-gray-700 underline">
+                                className="text-sm text-gray-700 no-underline">
                                 Register
-                            </Link>
+                            </Link></Button>
                     </div>
 
                 </div>
