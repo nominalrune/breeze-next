@@ -1,7 +1,7 @@
 import 'tailwindcss/tailwind.css'
 import * as React from "react";
 import { Routes, Route, Outlet, Link } from "react-router-dom";
-import type{ User } from '@/hooks/auth'
+import type{ User } from '@/hooks/useAuth'
 import Button from '@/components/Button';
 
 export default function Home({user}:{user:User}) {

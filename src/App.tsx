@@ -9,7 +9,7 @@ import Login from '@/pages/login';
 import Register from '@/pages/register';
 import VerifyEmail from '@/pages/verify-email';
 import ForgotPassword from '@/pages/forgot-password';
-import { useAuth } from '@/hooks/auth';
+import { useAuth } from '@/hooks/useAuth';
 import { Index } from '@/pages/task/Index';
 
 export default function App() {

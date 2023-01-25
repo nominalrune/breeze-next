@@ -2,7 +2,7 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import Button from '@/components/Button'
 import { Link } from "react-router-dom";
-import { useAuth } from '@/hooks/auth'
+import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 
 const VerifyEmail = () => {

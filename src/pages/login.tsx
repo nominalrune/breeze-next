@@ -7,7 +7,7 @@ import Input from '@/components/Input';
 import InputError from '@/components/InputError';
 import Label from '@/components/Label';
 import { Link } from "react-router-dom";
-import { useAuth } from '@/hooks/auth';
+import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';

@@ -7,7 +7,7 @@ import ResponsiveNavLink, {
     ResponsiveNavButton,
 } from '@/components/ResponsiveNavLink'
 import { DropdownButton } from '@/components/DropdownLink'
-import { useAuth } from '@/hooks/auth'
+import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 const Navigation = ({ user }:any) => { //FIXME
     const location = useLocation();

@@ -1,19 +1,13 @@
-import useSWR from 'swr';
 import axios from '@/lib/axios';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import type { User } from '@/models/User';
 
-type Params = { middleware?: string, redirectIfAuthenticated?: string; };
-export const useAuth = ({ middleware, redirectIfAuthenticated = "/dashboard" }: Params = {}) => {
+
+export const useAuth = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState<User>();
 
-            // , {
-    //     revalidateIfStale: false,
-    //     revalidateOnFocus: false,
-    //     revalidateOnReconnect: false
-    // });
 
     const csrf = () => axios.get('/sanctum/csrf-cookie');
 
