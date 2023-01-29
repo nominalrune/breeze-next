@@ -11,25 +11,32 @@ export const useAuth = () => {
 
     const csrf = () => axios.get('/sanctum/csrf-cookie');
 
-    const register = async ({ setErrors, ...props }: any) => { //FIXME
+    interface RegisterInputs{
+        name:string;
+        email:string;
+        password:string;
+    }
+    const register = async ({ inputs }: {inputs:RegisterInputs}) => { //FIXME
         await csrf();
-        setErrors([]);
         axios
-            .post('/register', props)
-            .then(res => setUser(res.data))
+            .post('/register', inputs)
+            .then(res => {setUser(res.data);return {user:res.data};})
             .catch(error => {
-                if (error.response.status === 422){ setErrors("The email is already taken");}
+                // if (error.response.status === 422){ return {error:"The email is already taken"};}
+                return {error};
             });
     };
-
-    const login = async ({ setErrors, setStatus, ...props }: any) => { //FIXME
+    interface LoginInputs{
+        email:string;
+        password:string;
+        remember:boolean;
+    }
+    const login = async ({ inputs, redirectIfAuthenticated }: {inputs:LoginInputs, redirectIfAuthenticated:string}) => { //FIXME
         await csrf();
         console.log("csrf fetched")
-        setErrors([]);
-        setStatus(null);
         try {
             console.log("login fetch started")
-            const res= await axios.post('/login', props);
+            const res= await axios.post('/login', inputs);
             console.log("login fetch finished",res)
             setUser(res.data);
             console.log("mutate finished")
@@ -94,18 +101,18 @@ export const useAuth = () => {
         navigate('/');
     };
 
-    useEffect(() => {
-        if (middleware === 'guest' && redirectIfAuthenticated && user) {
-            navigate(redirectIfAuthenticated);
-        }
-        if (
-            window.location.pathname === '/verify-email' &&
-            user?.email_verified_at && redirectIfAuthenticated
-        ) {
-            navigate(redirectIfAuthenticated);
-        }
-        if (middleware === 'auth' && !user) { logout(); }
-    }, [user]);
+    // useEffect(() => {
+    //     if (middleware === 'guest' && redirectIfAuthenticated && user) {
+    //         navigate(redirectIfAuthenticated);
+    //     }
+    //     if (
+    //         window.location.pathname === '/verify-email' &&
+    //         user?.email_verified_at && redirectIfAuthenticated
+    //     ) {
+    //         navigate(redirectIfAuthenticated);
+    //     }
+    //     if (middleware === 'auth' && !user) { logout(); }
+    // }, [user]);
 
     return {
         user,

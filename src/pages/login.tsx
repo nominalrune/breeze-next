@@ -13,11 +13,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string, login:(param:any)=>any}) => {
 
-    const { login } = useAuth({
-        middleware: 'guest',
-        redirectIfAuthenticated: redirectIfAuthenticated??'/dashboard',
-    });
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [shouldRemember, setShouldRemember] = useState(false);
@@ -39,8 +34,6 @@ const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string
             email,
             password,
             remember: shouldRemember,
-            setErrors,
-            setStatus,
         }
         console.log(formData)
 
