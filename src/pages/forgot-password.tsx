@@ -7,10 +7,10 @@ import InputError from '@/components/InputError'
 import Label from '@/components/Label'
 import {Link} from 'react-router-dom'
 import { useState,useContext,ChangeEvent } from 'react'
-import { useAuth } from '@/hooks/useAuth';
+import { AuthContext } from '@/contexts/AuthContext';
 
 const ForgotPassword = () => {
-    const { forgotPassword } = useAuth();
+    const { forgotPassword } = useContext(AuthContext)
 
     const [email, setEmail] = useState('')
     const [errors, setErrors] = useState<any>([]) //FIXME - any

@@ -1,11 +1,11 @@
 import 'tailwindcss/tailwind.css'
 import  React,{useContext} from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from '@/hooks/useAuth';
+import { AuthContext } from '@/contexts/AuthContext';
 import Button from '@/components/Button';
 
 export default function Home() {
-    const {user}=useAuth();
+    const {user}=useContext(AuthContext);
     return (
         <>
             <div className="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
@@ -18,11 +18,7 @@ export default function Home() {
                         </Link>
                     ) : (
                         <>
-                            <Link
-                                to="/login"
-                                className="text-sm text-gray-700 no-underline">
-                                Login
-                            </Link>
+
                         </>
                     )}
                 </div>

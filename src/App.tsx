@@ -8,7 +8,8 @@ import Login from '@/pages/login';
 import Register from '@/pages/register';
 import VerifyEmail from '@/pages/verify-email';
 import ForgotPassword from '@/pages/forgot-password';
-import { Index as Tasks } from '@/pages/task/Index';
+import { AuthContext } from '@/contexts/AuthContext';
+import { Index } from '@/pages/task/Index';
 
 export default function App() {
 
@@ -17,7 +18,7 @@ export default function App() {
                 <Route path="/" element={<AppLayout/>}>
                     <Route index element={<Home />} />
                     <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="task" element={<Tasks />} />
+                    <Route path="task" element={<Dashboard />} />
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                     <Route path="verify-email" element={<VerifyEmail />} />

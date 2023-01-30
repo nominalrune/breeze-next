@@ -7,12 +7,12 @@ import InputError from '@/components/InputError';
 import Label from '@/components/Label';
 import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { AuthContext } from '@/contexts/AuthContext';
 
 import { useParams } from 'react-router-dom';
 
 const Login = ({redirectIfAuthenticated}:{redirectIfAuthenticated?:string}) => {
-    const {login}=useAuth();
+    const {login}=useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

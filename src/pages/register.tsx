@@ -5,11 +5,11 @@ import Input from '@/components/Input'
 import InputError from '@/components/InputError'
 import Label from '@/components/Label'
 import { Link } from "react-router-dom";
-import { useAuth } from '@/hooks/useAuth';
+import { AuthContext } from '@/contexts/AuthContext'
 import React, { ChangeEvent, useState,useContext } from 'react'
 
 const Register = () => {
-    const { register } = useAuth();
+    const { register } = useContext(AuthContext);
 
 
     const [name, setName] = useState('')

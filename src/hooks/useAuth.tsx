@@ -16,17 +16,17 @@ export const useAuth = () => {
         email: string;
         password: string;
     }
-    const register = async (inputs: RegisterInputs, redirectIfAuthenticated: string = "/") => {
+    const register = async (inputs: RegisterInputs, redirectIfAuthenticated: string = "/") => { //FIXME
         await csrf();
         axios
             .post('/register', inputs)
             .then(res => {
-                setUser(res.data.user);
+                setUser(res.data);
                 navigate(redirectIfAuthenticated);
             })
             .catch(error => {
                 // if (error.response.status === 422){ return {error:"The email is already taken"};}
-                console.error({ error });
+                return { error };
             });
     };
     interface LoginInputs {
@@ -41,7 +41,7 @@ export const useAuth = () => {
             console.log("login fetch started");
             const res = await axios.post('/login', inputs);
             console.log("login fetch finished", res);
-            setUser(res.data.user);
+            setUser(res.data);
             navigate(redirectIfAuthenticated);
         } catch (error) {
             console.error({ error });
