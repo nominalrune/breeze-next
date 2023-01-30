@@ -2,19 +2,16 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import AuthSessionStatus from '@/components/AuthSessionStatus'
 import Button from '@/components/Button'
-import GuestLayout from '@/components/Layouts/GuestLayout'
 import Input from '@/components/Input'
 import InputError from '@/components/InputError'
 import Label from '@/components/Label'
-import Link from 'next/link'
+import {Link, useParams} from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import {type ChangeEvent, useEffect, useState } from 'react'
 
 const PasswordReset = () => {
-    const router = useRouter()
-
-    const { resetPassword } = useAuth({ middleware: 'guest' })
+    const params = useParams();
+    const { resetPassword } = useAuth()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -22,27 +19,23 @@ const PasswordReset = () => {
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
 
-    const submitForm = event => {
+    const submitForm = (event:SubmitEvent) => {
         event.preventDefault()
 
         resetPassword({
             email,
             password,
-            password_confirmation: passwordConfirmation,
-            setErrors,
-            setStatus,
         })
     }
 
     useEffect(() => {
-        setEmail(router.query.email || '')
-    }, [router.query.email])
+        setEmail(params.email || '')
+    }, [params.email])
 
     return (
-        <GuestLayout>
             <AuthCard
                 logo={
-                    <Link href="/">
+                    <Link to="/">
                         <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
                     </Link>
                 }>
@@ -59,7 +52,7 @@ const PasswordReset = () => {
                             type="email"
                             value={email}
                             className="block mt-1 w-full"
-                            onChange={event => setEmail(event.target.value)}
+                            onChange={(event:ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
                             required
                             autoFocus
                         />
@@ -75,7 +68,7 @@ const PasswordReset = () => {
                             type="password"
                             value={password}
                             className="block mt-1 w-full"
-                            onChange={event => setPassword(event.target.value)}
+                            onChange={(event:ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                             required
                         />
 
@@ -96,7 +89,7 @@ const PasswordReset = () => {
                             type="password"
                             value={passwordConfirmation}
                             className="block mt-1 w-full"
-                            onChange={event =>
+                            onChange={(event:ChangeEvent<HTMLInputElement>) =>
                                 setPasswordConfirmation(event.target.value)
                             }
                             required
@@ -113,7 +106,6 @@ const PasswordReset = () => {
                     </div>
                 </form>
             </AuthCard>
-        </GuestLayout>
     )
 }
 
