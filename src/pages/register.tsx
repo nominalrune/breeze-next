@@ -1,19 +1,16 @@
 import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import Button from '@/components/Button'
-import GuestLayout from '@/components/Layouts/GuestLayout'
 import Input from '@/components/Input'
 import InputError from '@/components/InputError'
 import Label from '@/components/Label'
 import { Link } from "react-router-dom";
-import { useAuth } from '@/hooks/useAuth'
-import React, { ChangeEvent, useState } from 'react'
+import { AuthContext } from '@/contexts/AuthContext'
+import React, { ChangeEvent, useState,useContext } from 'react'
 
 const Register = () => {
-    const { register } = useAuth({
-        middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard',
-    })
+    const { register } = useContext(AuthContext);
+
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -28,9 +25,8 @@ const Register = () => {
             name,
             email,
             password,
-            password_confirmation: passwordConfirmation,
-            setErrors,
-        })
+        },
+        '/dashboard',)
     }
 
     return (

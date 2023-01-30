@@ -11,68 +11,59 @@ export const useAuth = () => {
 
     const csrf = () => axios.get('/sanctum/csrf-cookie');
 
-    interface RegisterInputs{
-        name:string;
-        email:string;
-        password:string;
+    interface RegisterInputs {
+        name: string;
+        email: string;
+        password: string;
     }
-    const register = async ({ inputs }: {inputs:RegisterInputs}) => { //FIXME
+    const register = async (inputs: RegisterInputs, redirectIfAuthenticated: string = "/") => { //FIXME
         await csrf();
         axios
             .post('/register', inputs)
-            .then(res => {setUser(res.data);return {user:res.data};})
+            .then(res => {
+                setUser(res.data);
+                navigate(redirectIfAuthenticated);
+            })
             .catch(error => {
                 // if (error.response.status === 422){ return {error:"The email is already taken"};}
-                return {error};
+                return { error };
             });
     };
-    interface LoginInputs{
-        email:string;
-        password:string;
-        remember:boolean;
+    interface LoginInputs {
+        email: string;
+        password: string;
+        remember: boolean;
     }
-    const login = async ({ inputs, redirectIfAuthenticated }: {inputs:LoginInputs, redirectIfAuthenticated:string}) => { //FIXME
+    const login = async (inputs: LoginInputs, redirectIfAuthenticated: string = "/") => {
         await csrf();
-        console.log("csrf fetched")
+        console.log("csrf fetched");
         try {
-            console.log("login fetch started")
-            const res= await axios.post('/login', inputs);
-            console.log("login fetch finished",res)
+            console.log("login fetch started");
+            const res = await axios.post('/login', inputs);
+            console.log("login fetch finished", res);
             setUser(res.data);
-            console.log("mutate finished")
-
             navigate(redirectIfAuthenticated);
-            console.log("redirect finished")
         } catch (error) {
-            console.error({error});
+            console.error({ error });
             // if (error.response.status === 422){setErrors()}
             // setErrors(error.response.data.errors);
         }
     };
 
-    const forgotPassword = async ({ setErrors, setStatus, email }: any) => { //FIXME
+    const forgotPassword = async (email: string) => { //FIXME
         await csrf();
-
-        setErrors([]);
-        setStatus(null);
 
         axios
             .post('/forgot-password', { email })
-            .then(response => setStatus(response.data.status))
             .catch(error => {
-                if (error.response.status !== 422) throw new Error(error);
-
-                setErrors(error.response.data.errors);
+                // if (error.response.status !== 422) throw new Error(error);
+                throw new Error(error);
             });
     };
 
-    const resetPassword = async ({ setErrors, setStatus, ...props }: any) => { //FIXME
+    const resetPassword = async (props: any) => { //FIXME
         const { token } = useParams();
         await csrf();
-
-        setErrors([]);
-        setStatus(null);
-
         axios
             .post('/reset-password', { token, ...props })
             .then(response =>
@@ -80,22 +71,17 @@ export const useAuth = () => {
             )
             .catch(error => {
                 if (error.response.status !== 422) throw new Error(error);
-
-                setErrors(error.response.data.errors);
             });
     };
 
-    const resendEmailVerification = ({ setStatus }: any) => { //FIXME
+    const resendEmailVerification = () => {
         axios
-            .post('/email/verification-notification')
-            .then(response => setStatus(response.data.status));
-
-
+            .post('/email/verification-notification');
     };
 
     const logout = async () => {
         if (user) {
-            await axios.post('/logout')
+            await axios.post('/logout');
             setUser(undefined);
         }
         navigate('/');

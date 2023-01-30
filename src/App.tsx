@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/dashboard";
 import Home from './pages/index';
 import AppLayout from '@/components/Layouts/AppLayout';
-import GuestLayout from './components/Layouts/GuestLayout';
 import NotFoundPage from '@/pages/404';
 import Login from '@/pages/login';
 import Register from '@/pages/register';
@@ -16,7 +15,7 @@ export default function App() {
 
     return (
             <Routes>
-                <Route path="/" element={<AppLayout header={<>ATEST</>}/>}>
+                <Route path="/" element={<AppLayout/>}>
                     <Route index element={<Home />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="task" element={<Dashboard />} />

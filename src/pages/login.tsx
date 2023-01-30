@@ -2,26 +2,27 @@ import ApplicationLogo from '@/components/ApplicationLogo';
 import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
 import Button from '@/components/Button';
-import GuestLayout from '@/components/Layouts/GuestLayout';
 import Input from '@/components/Input';
 import InputError from '@/components/InputError';
 import Label from '@/components/Label';
 import { Link } from "react-router-dom";
-import { useAuth } from '@/hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 
 import { useParams } from 'react-router-dom';
-const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string, login:(param:any)=>any}) => {
+
+const Login = ({redirectIfAuthenticated}:{redirectIfAuthenticated?:string}) => {
+    const {login}=useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [shouldRemember, setShouldRemember] = useState(false);
-    const [errors, setErrors] = useState<any>([]); //FIXME - any
+    const [errors, setErrors] = useState({email:[""], password:[""],});
     const [status, setStatus] = useState<string | null>(null);
     const { reset } = useParams();
 
     useEffect(() => {
-        if (typeof reset === 'string' && reset.length > 0 && errors.length === 0) {
+        if (typeof reset === 'string' && reset.length > 0) {
             setStatus(atob(reset));
         } else {
             setStatus(null);
@@ -35,9 +36,9 @@ const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string
             password,
             remember: shouldRemember,
         }
-        console.log(formData)
+        console.log({formData})
 
-        await login(formData);
+        await login(formData,redirectIfAuthenticated);
     };
 
     return (
@@ -64,8 +65,6 @@ const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string
                             required
                             autoFocus
                         />
-
-                        <InputError messages={errors.email} className="mt-2" />
                     </div>
 
                     {/* Password */}
@@ -80,11 +79,6 @@ const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                             required
                             autoComplete="current-password"
-                        />
-
-                        <InputError
-                            messages={errors.password}
-                            className="mt-2"
                         />
                     </div>
 
@@ -116,7 +110,7 @@ const Login = ({redirectIfAuthenticated, login}:{redirectIfAuthenticated?:string
                             Forgot your password?
                         </Link>
 
-                        <Button className="ml-3">Login</Button>
+                        <Button type="submit" className="ml-3">Login</Button>
                     </div>
                 </form>
             </AuthCard>

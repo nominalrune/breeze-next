@@ -7,11 +7,12 @@ import ResponsiveNavLink, {
     ResponsiveNavButton,
 } from '@/components/ResponsiveNavLink'
 import { DropdownButton } from '@/components/DropdownLink'
-import { useAuth } from '@/hooks/useAuth'
-import { useState } from 'react'
-const Navigation = ({ user }:any) => { //FIXME
+import { AuthContext } from '@/contexts/AuthContext'
+import { useContext, useState } from 'react';
+import type { User } from '@/models/User';
+const Navigation = ({ user }:{user:User}) => {
     const location = useLocation();
-    const { logout } = useAuth()
+    const { logout } = useContext(AuthContext)
     const [open, setOpen] = useState(false)
     return (
         <nav className="bg-white border-b border-gray-100">
