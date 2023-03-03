@@ -2,11 +2,11 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import Button from '@/components/Button'
 import { Link } from "react-router-dom";
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { useState,useContext } from 'react'
 
 const VerifyEmail = () => {
-    const { logout, resendEmailVerification } = useContext(AuthContext)
+    const { logout, resendEmailVerification } = useAuth()
 
     const [status, setStatus] = useState(null)
 
