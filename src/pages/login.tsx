@@ -1,7 +1,7 @@
 import ApplicationLogo from '@/components/ApplicationLogo';
 import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
-import Button from '@/components/Button';
+import Button from '@/components/Buttons/PrimaryButton';
 import Input from '@/components/Input';
 import InputError from '@/components/InputError';
 import Label from '@/components/Label';
@@ -12,14 +12,14 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 
 const Login = ({redirectIfAuthenticated}:{redirectIfAuthenticated?:string}) => {
-    const {login}=useContext(AuthContext);
-
+    const {login,user}=useContext(AuthContext);
+        console.log({login},{user})
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [shouldRemember, setShouldRemember] = useState(false);
     const [errors, setErrors] = useState({email:[""], password:[""],});
     const [status, setStatus] = useState<string | null>(null);
-    const { reset } = useParams();
+    const { reset,redirect } = useParams();
 
     useEffect(() => {
         if (typeof reset === 'string' && reset.length > 0) {
@@ -37,7 +37,6 @@ const Login = ({redirectIfAuthenticated}:{redirectIfAuthenticated?:string}) => {
             remember: shouldRemember,
         }
         console.log({formData})
-
         await login(formData,redirectIfAuthenticated);
     };
 

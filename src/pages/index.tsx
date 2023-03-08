@@ -1,11 +1,12 @@
-import 'tailwindcss/tailwind.css'
-import  React,{useContext} from "react";
+import 'tailwindcss/tailwind.css';
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from '@/contexts/AuthContext';
-import Button from '@/components/Button';
+import Button from '@/components/Buttons/PrimaryButton';
+import type {AuthParam} from '@/models/User';
 
-export default function Home() {
-    const {user}=useContext(AuthContext);
+export default function Home({user}:AuthParam) {
+
     return (
         <>
             <div className="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
@@ -13,7 +14,7 @@ export default function Home() {
                     {user ? (
                         <Link
                             to="/dashboard"
-                            className="ml-4 text-sm text-gray-700 underline">
+                            className="ml-4 text-sm text-gray-50 underline">
                             Dashboard
                         </Link>
                     ) : (
@@ -25,22 +26,22 @@ export default function Home() {
 
                 <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
                     <div className="flex justify-center gap-5 pt-8 sm:justify-start sm:pt-0">
-                        <Button className='bg-gray-200 border-2 border-gray-300 hover:bg-gray-300 '><Link
-                                to="/login"
-                                className="text-sm text-gray-700 no-underline">
-                                Login
-                            </Link></Button>
+                        {user ? <>welcome</> : <><Button className='bg-gray-200 border-2 border-gray-300 hover:bg-gray-300 '><Link
+                            to="/login"
+                            className="text-sm text-gray-50 no-underline">
+                            Login
+                        </Link></Button>
 
                             <Button className='bg-gray-200 border-2 border-gray-300 hover:bg-gray-300 '>
                                 <Link
-                                to="/register"
-                                className="text-sm text-gray-700 no-underline">
-                                Register
-                            </Link></Button>
+                                    to="/register"
+                                    className="text-sm text-gray-50 no-underline">
+                                    Register
+                                </Link></Button></>}
                     </div>
 
                 </div>
             </div>
         </>
-    )
+    );
 }

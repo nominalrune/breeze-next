@@ -1,4 +1,4 @@
-import AppLayout from '@/components/Layouts/AppLayout'
+import AppLayout from '@/Layouts/AppLayout'
 import type{ User } from '@/models/User'
 const Dashboard = ({user}:{user?:User}) => {
     return (

@@ -2,8 +2,7 @@ import {useEffect,useState} from 'react';
 import { useParams } from 'react-router-dom';
 import {axios} from '@/lib/useAxios';
 import type { Task } from '@/models/Task';
-import type {AuthParam} from '@/models/User';
-export function Show({user}:AuthParam){
+export function Show({user}:Param){
 	const [task,setTask]=useState<Task>();
 	let { taskId } = useParams();
 	useEffect(()=>{

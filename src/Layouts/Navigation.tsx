@@ -35,6 +35,20 @@ const Navigation = ({ user }:{user:User}) => {
                                 Dashboard
                             </NavLink>
                         </div>
+                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <NavLink
+                                to="/tasks"
+                                active={location.pathname=== '/tasks'}>
+                                Tasks
+                            </NavLink>
+                        </div>
+                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <NavLink
+                                to="/records"
+                                active={location.pathname=== '/records'}>
+                                Records
+                            </NavLink>
+                        </div>
                     </div>
 
                     {/* Settings Dropdown */}

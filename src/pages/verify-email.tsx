@@ -1,6 +1,6 @@
 import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
-import Button from '@/components/Button'
+import Button from '@/components/Buttons/PrimaryButton'
 import { Link } from "react-router-dom";
 import { AuthContext } from '@/contexts/AuthContext';
 import { useState,useContext } from 'react'
