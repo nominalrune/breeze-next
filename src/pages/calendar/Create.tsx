@@ -12,7 +12,7 @@ export function Create({user}:AuthParam) {
     function handleSuccess(res:{data:{data:any,url:string}}) {
         console.log("handleSuccess",res)
         const id=res.data.id
-        redirect("/tasks/"+id);
+        location.replace("/calendar/"+id);
     }
     const props:Property[]=[
         {
@@ -24,24 +24,32 @@ export function Create({user}:AuthParam) {
             type:'textarea',
             propName:'description',
             defaultValue:"",
-        },{
+        },
+        {
+            type:'datetime-local',
+            propName:"start_at",
+            label:"start at",
+            defaultValue:''
+        },
+        {
+            type:'datetime-local',
+            propName:"end_at",
+            label:"end at",
+            defaultValue:''
+        },
+        {
             type:'number',
             propName:"status",
             defaultValue:0
         },
         {
             type:"number",
-            propName:"parent_task_id",
-            defaultValue:""
-        },
-        {
-            type:"number",
-            propName:"assigned_to_id",
+            propName:"user_id",
             defaultValue:user?.id||"",
         }
     ];
     return (
         <div className="m-3 p-3">
-        <EditForm properties={props} method="post" route='/api/tasks' submitLabel="submit" handleSuccess={handleSuccess} />
+        <EditForm properties={props} method="post" route='/api/calendar' submitLabel="submit" handleSuccess={handleSuccess} />
     </div>);
 }

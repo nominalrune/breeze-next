@@ -18,26 +18,26 @@ export function Create({user}:AuthParam) {
         {
             type:'text',
             propName:'title',
-            value:"",
+            defaultValue:"",
         },
         {
             type:'textarea',
             propName:'description',
-            value:"",
+            defaultValue:"",
         },{
             type:'number',
             propName:"status",
-            value:0
+            defaultValue:0
         },
         {
             type:"number",
             propName:"parent_task_id",
-            value:""
+            defaultValue:""
         },
         {
             type:"number",
             propName:"assigned_to_id",
-            value:user?.id||"",
+            defaultValue:user?.id||"",
         }
     ];
     return (

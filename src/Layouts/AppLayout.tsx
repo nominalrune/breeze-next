@@ -15,7 +15,7 @@ const AppLayout = ({user}:AuthParam) => {
                 </ErrorBoundary>
             </main>
         </div>
-        : <div>not logged in
+        : <div><span className='fixed right-0 bottom-0'>not logged in</span>
             <div className="font-sans text-gray-900 antialiased">
                 <ErrorBoundary>
                     <Outlet />

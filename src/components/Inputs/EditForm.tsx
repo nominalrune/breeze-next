@@ -3,7 +3,7 @@ import PrimaryButton from '../Buttons/PrimaryButton';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import SecondaryButton from '../Buttons/SecondaryButton';
-import { useState } from 'react';
+import { useState, DetailedHTMLProps, SelectHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
 import { axios, csrf } from 'lib/useAxios';
 import type { Method, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { InputType } from './TextInput';
@@ -26,15 +26,25 @@ export type Params = {
 export type Property = {
 	propName: string,
 	label?: React.ReactNode,
-	value: string|number|boolean,
+	defaultValue: string | number | boolean,
 	className?: string,
-	attributes?: [{ [key: string]: string | number; }],
-	type: InputType,
-	options?: [
-		label: string | number,
-		value?: string | number,
-	][];
-};
+	required?: boolean,
+	placeholder?: string;
+} & (
+		{
+			type: "select",
+			options: [
+				label: string,
+				value: string | number
+			][],
+			attributes?: DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
+		} | {
+			type: "checkbox" | "color" | "date" | "datetime-local" | "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "reset" | "tel" | "text" | "time" | "url" | "week",
+			attributes?: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+		} | {
+			type: "textarea", attributes?: DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
+		}
+	);
 type ActionParams = {
 	data: {
 		[key: string]: any;
@@ -47,19 +57,19 @@ type ActionParams = {
 };
 
 export default function EditForm({ method, route, properties, urlParams, submitLabel, secondAction, cancel, handleSuccess }: Params) {
-	const [data, _setData] = useState<{ [key: Property["propName"]]: Property["value"]; }>(
+	const [data, _setData] = useState<{ [key: Property["propName"]]: Property["defaultValue"]; }>(
 		properties.reduce(
-			(acc, cur) => ({ ...acc, [cur.propName]: cur.value ?? "" }),
+			(acc, cur) => ({ ...acc, [cur.propName]: cur.defaultValue ?? "" }),
 			{})
 	);
-	const [processing, setProcessing]=useState(false);
-	function setData(propName: Property["propName"], value: Property["value"]) {
+	const [processing, setProcessing] = useState(false);
+	function setData(propName: Property["propName"], value: Property["defaultValue"]) {
 		_setData({ ...data, [propName]: value });
 	}
 
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-		console.log({ data });
+		// console.log({ data });
 		setData(
 			event.target.name,
 			(event.target.type === 'checkbox' && 'checked' in event.target
@@ -69,13 +79,13 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 	};
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		const url = route + (urlParams??""); // FIXME
+		const url = route + (urlParams ?? ""); // FIXME
 		setProcessing(true);
 		axios({ method, url, data }).then(res => {
 			setProcessing(false);
-			console.log("responce: ",res);
+			console.log("responce: ", res);
 			handleSuccess && handleSuccess(res);
-		}).finally(()=>{
+		}).finally(() => {
 			setProcessing(false);
 		});
 	};
@@ -84,10 +94,10 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 		<form onSubmit={handleSubmit}>
 			{
 				properties.map((prop) => prop.type === "hidden"
-					? <div key={"input_" + prop.propName}></div>
+					? <div key={"input_" + prop.propName}></div> // no need to show data because the value is already set
 					: (
 						<div key={"input_" + prop.propName} className="mt-4">
-							<InputLabel forInput={prop.propName} label={prop.label??prop.propName} />
+							<InputLabel forInput={prop.propName} label={prop.label ?? prop.propName} />
 							{
 								(prop.type === "select" && prop.options)
 									?
@@ -95,8 +105,7 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 										name={prop.propName}
 										value={data[prop.propName].toString()}
 										className={
-											`border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full ` +
-											prop.className
+											prop.className ?? ""
 										}
 										options={prop.options}
 										handleChange={handleChange}
@@ -118,10 +127,7 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 											type={prop.type}
 											name={prop.propName}
 											value={data[prop.propName].toString()}
-											className={
-												`border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full ` +
-												prop.className
-											}
+											className={prop.className ?? ""}
 											handleChange={handleChange}
 											{...prop.attributes}
 										/>

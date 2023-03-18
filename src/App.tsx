@@ -13,6 +13,9 @@ import { ForceLogin } from './Layouts/ForceLogin';
 import { Index as Tasks } from '@/pages/task/Index';
 import { Create as TaskCreate } from '@/pages/task/Create';
 import { Show as TaskShow } from '@/pages/task/Show';
+import { Index as Calendar } from '@/pages/calendar/Index';
+import { Create as CalendarCreate } from '@/pages/calendar/Create';
+import { Show as CalendarShow } from '@/pages/calendar/Show';
 
 export default function App() {
     const { user } = useContext(AuthContext);
@@ -28,6 +31,11 @@ export default function App() {
                     <Route index element={<Tasks />} />
                     <Route path="create" element={<TaskCreate user={user} />} />
                     <Route path=":taskId" element={<TaskShow user={user} />} />
+                </Route>
+                <Route path="calendar">
+                    <Route index element={<Calendar user={user}/>} />
+                    <Route path="create" element={<CalendarCreate user={user} />} />
+                    <Route path=":calendarId" element={<CalendarShow user={user} />} />
                 </Route>
                 {/* </Route> */}
                 {/* <Route path="dashboard" element={<ForceLogin><Dashboard /></ForceLogin>} />

@@ -49,6 +49,13 @@ const Navigation = ({ user }:{user:User}) => {
                                 Records
                             </NavLink>
                         </div>
+                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <NavLink
+                                to="/calendar"
+                                active={location.pathname=== '/calendar'}>
+                                calendar
+                            </NavLink>
+                        </div>
                     </div>
 
                     {/* Settings Dropdown */}
