@@ -1,6 +1,6 @@
 import type { User } from './User';
 import type {EventInput} from '@fullcalendar/core';
-import type { OmitMany } from './utiltype';
+import type { OmitMany } from '../utiltype';
 
 export type CalendarEventInput=EventInput&OmitMany<CalendarEvent,['id',"toEvent"]>&{end:Date,start:Date,toFormData:()=>CalendarEventDTO};
 
