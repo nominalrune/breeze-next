@@ -40,7 +40,7 @@ export class CalendarEvent {
 			user: this.user,
 			created_at: this.created_at,
 			updated_at: this.updated_at,
-			toFormData:this.toFormData
+			toFormData:()=>(this.toFormData())
 		}
 	}
 	toFormData():CalendarEventDTO{
@@ -48,8 +48,8 @@ export class CalendarEvent {
 			id: this.id,
 			state:this.state,
 			title: this.title,
-			start_at: this.start_at.toISOString().replace(/\.\d+Z/, ""),
-			end_at: this.end_at.toISOString().replace(/\.\d+Z/, ""),
+			start_at: this.start_at.toISOString().replace(/\d{4}-\d\d-\d\dT/, "").replace(/\.\d+Z/, ""),
+			end_at: this.end_at.toISOString().replace(/\d{4}-\d\d-\d\dT/, "").replace(/\.\d+Z/, ""),
 			description: this.description,
 			user_id: this.user_id,
 			user: this.user,

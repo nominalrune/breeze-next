@@ -110,25 +110,13 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 										handleChange={handleChange}
 										{...prop.attributes}
 									/>
-									: (prop.type === "textarea")
-										?
-										<textarea
-											name={prop.propName}
-											value={data[prop.propName].toString()}
-											className={
-												`border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full ` +
-												prop.className
-											}
-											onChange={handleChange}
-											{...prop.attributes}
-										/>
 										: <TextInput
 											{...prop.attributes}
 											type={prop.type}
 											name={prop.propName}
 											value={data[prop.propName].toString()}
 											className={prop.className ?? ""}
-											handleChange={handleChange}
+											onChange={handleChange}
 										/>
 							}
 							{/* <InputError message={errors.email} className="mt-2" /> */}
@@ -138,7 +126,7 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 			<div className="flex items-center justify-end mt-4">
 				{cancel && (<SecondaryButton className="ml-4" onClick={cancel.handleCancel}>{cancel.label}</SecondaryButton>)}
 				{secondAction && (<SecondaryButton onClick={() => secondAction.handleSecondAction({ data, setData, submit, errors, processing, reset })} className="ml-4">{secondAction.label}</SecondaryButton>)}
-				<PrimaryButton className="ml-4" processing={processing}>
+				<PrimaryButton className="ml-4" disabled={processing}>
 					{submitLabel}
 				</PrimaryButton>
 			</div>

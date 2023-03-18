@@ -63,7 +63,7 @@ export function Index({ user }: AuthParam) {
                 </div>
                 <div className='flex flex-col'>
                     {time}
-                    {duration && <span className='text-xs'>{duration}分</span>}
+                    {duration && <span className='text-xs' >{duration}分</span>}
                 </div>
             </>
         );
@@ -71,7 +71,7 @@ export function Index({ user }: AuthParam) {
     function handleEventClick(p: EventClickInfo<CalendarEventInput>) {
 		const {event }:{event:CalendarEventInput}=p;
         console.log({ event });
-        setModalAttr({ title: event.title, mainText: getModalText(event), event: event.toFormData() });
+        setModalAttr({ title: event.title, mainText: getModalText(event), event: event.extendedProps?.toFormData() });
         setShowModal(true);
     }
     function nextMonth() {
