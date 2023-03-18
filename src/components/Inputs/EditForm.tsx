@@ -16,11 +16,11 @@ export type Params = {
 	handleSuccess?: (res: AxiosResponse) => any,
 	secondAction?: {
 		label: React.ReactNode,
-		// handleSecondAction: (p?: ActionParams) => any;
+		handleSecondAction: (p?: ActionParams) => any;
 	};
 	cancel?: {
 		label: React.ReactNode,
-		// handleCancel: (p?: ActionParams) => any;
+		handleCancel?: (p?: ActionParams) => any;
 	};
 };
 export type Property = {
@@ -39,7 +39,7 @@ export type Property = {
 			][],
 			attributes?: DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
 		} | {
-			type: "checkbox" | "color" | "date" | "datetime-local" | "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "reset" | "tel" | "text" | "time" | "url" | "week",
+			type: "checkbox" | "color" | "date" | "datetime-local" | "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "tel" | "text" | "time" | "url" | "week",
 			attributes?: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 		} | {
 			type: "textarea", attributes?: DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
@@ -49,7 +49,7 @@ type ActionParams = {
 	data: {
 		[key: string]: any;
 	},
-	setData: () => void,
+	setData: (p:any) => void,
 	submit: (method: Method, url: string, options?: any) => void,
 	processing: boolean,
 	errors: any,
@@ -99,11 +99,11 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 						<div key={"input_" + prop.propName} className="mt-4">
 							<InputLabel forInput={prop.propName} label={prop.label ?? prop.propName} />
 							{
-								(prop.type === "select" && prop.options)
+								(prop.type === "select")
 									?
 									<SelectInput
 										name={prop.propName}
-										value={data[prop.propName].toString()}
+										value={data[prop.propName].toString()??""}
 										className={
 											prop.className ?? ""
 										}
@@ -124,12 +124,12 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 											{...prop.attributes}
 										/>
 										: <TextInput
+											{...prop.attributes}
 											type={prop.type}
 											name={prop.propName}
 											value={data[prop.propName].toString()}
 											className={prop.className ?? ""}
 											handleChange={handleChange}
-											{...prop.attributes}
 										/>
 							}
 							{/* <InputError message={errors.email} className="mt-2" /> */}
@@ -137,8 +137,8 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 					))
 			}
 			<div className="flex items-center justify-end mt-4">
-				{/* {cancel && (<SecondaryButton className="ml-4" onClick={cancel.handleCancel}>{cancel.label}</SecondaryButton>)} */}
-				{/* {secondAction && (<SecondaryButton onClick={() => secondAction.handleSecondAction({ data, setData, submit, errors, processing, reset })} className="ml-4">{secondAction.label}</SecondaryButton>)} */}
+				{cancel && (<SecondaryButton className="ml-4" onClick={cancel.handleCancel}>{cancel.label}</SecondaryButton>)}
+				{secondAction && (<SecondaryButton onClick={() => secondAction.handleSecondAction({ data, setData, submit, errors, processing, reset })} className="ml-4">{secondAction.label}</SecondaryButton>)}
 				<PrimaryButton className="ml-4" processing={processing}>
 					{submitLabel}
 				</PrimaryButton>

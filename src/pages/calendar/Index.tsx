@@ -6,13 +6,14 @@ import type { AuthParam } from '@/models/User';
 import type { Record } from '@/models/Record';
 import type { Task } from '@/models/Task';
 import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton';
-import { CalendarEvent, CalendarEventDTO } from '@/models/CalendarEvent';
+import { CalendarEvent, CalendarEventDTO, CalendarEventInput } from '@/models/CalendarEvent';
 import { FiPlus, FiChevronLeft, FiChevronRight, FiRepeat, FiEdit, FiEdit2 } from 'react-icons/fi';
 
 import CalendarEditForm from '@/components/Calendar/CalendarEditForm';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import type { EventSourceInput, EventClickArg, EventApi, CalendarApi } from '@fullcalendar/core';
+import type { EventInput, EventClickArg, EventApi, CalendarApi } from '@fullcalendar/core';
+
 import jaLocale from '@fullcalendar/core/locales/ja';
 import { Modal, ModalProps } from '@/components/Modals/Modal';
 
@@ -26,30 +27,30 @@ interface EventClickInfo<T> extends EventClickArg {
 }
 
 export function Index({ user }: AuthParam) {
-    const [events, setEvents] = useState<CalendarEvent[]>([]);
+    const [events, setEvents] = useState<CalendarEventInput[]>([]);
     const params = Object.fromEntries([...new URL(location.href).searchParams.entries()]);
     const [month, setMonth] = useState(params.start ? new Date(params.start) : (() => { const d = new Date(0); d.setFullYear(new Date().getFullYear()); d.setMonth(new Date().getMonth()); return d; })());
     const [calendarApi, setCalendarApi] = useState<CalendarApi>();
     useEffect(() => {
-        const url = encodeURI(`${location.pathname}?display_type=month&start=${month.getFullYear()}-${month.getMonth() + 1}`);
+        const url = encodeURI(`/api/calendar?display_type=month&start=${month.getFullYear()}-${month.getMonth() + 1}`);
         axios.get<CalendarEventDTO[]>(url).then(({ data }) => {
-            console.log("fetched:", data);
-            setEvents(data.map(event => new CalendarEvent(event)));
+            console.log("fetched:", data, data.map(event => new CalendarEvent(event).toEvent()));
+            setEvents(data.map(event => new CalendarEvent(event).toEvent()));
         });
     }, [month]);
 
     const [isEdit, setIsEdit] = useState(false);
-
     const [showModal, setShowModal] = useState(false);
     const [modalAttr, setModalAttr] = useState<Omit<ModalProps, 'close'> & { event?: CalendarEventDTO; }>({ title: '' });
-    function getModalText(event: CalendarEvent) {
-        let time = `${event.start_at.getHours()}:${event.start_at.getMinutes().toString().padStart(2, "0")}`;
-        let duration: number | undefined = undefined;
-        if (event.end_at && event.start_at < event.end_at) {
-            time += `~${event.end_at.getHours()}:${event.end_at.getMinutes().toString().padStart(2, "0")}`;
-            duration = (event.end_at.getHours() * 60 + event.end_at.getMinutes()) - (event.start_at.getHours() * 60 + event.start_at.getMinutes());
-        }
 
+    function getModalText(event: CalendarEventInput) {
+		// console.log({event})
+        let time = `${event.start.getHours()}:${event.start.getMinutes().toString().padStart(2, "0")}`;
+        let duration: number | undefined = undefined;
+        if (event.end && event.start < event.end) {
+            time += `~${event.end.getHours()}:${event.end.getMinutes().toString().padStart(2, "0")}`;
+            duration = (event.end.getHours() * 60 + event.end.getMinutes()) - (event.start.getHours() * 60 + event.start.getMinutes());
+        }
         return (
             <>
                 <div className='flex justify-end'>
@@ -67,9 +68,10 @@ export function Index({ user }: AuthParam) {
             </>
         );
     }
-    function handleEventClick({ event }: EventClickInfo<CalendarEvent>) {
+    function handleEventClick(p: EventClickInfo<CalendarEventInput>) {
+		const {event }:{event:CalendarEventInput}=p;
         console.log({ event });
-        setModalAttr({ title: event.title, mainText: getModalText(event.extendedProps), event: { title: event.title, id: event.id, date: event.start.toISOString().replace(/T.+Z/, ""), start_at: event.start.toLocaleTimeString(["en-GB"], { hour: "2-digit", minute: "2-digit" }), end_at: event.end.toLocaleTimeString(["en-GB"], { hour: "2-digit", minute: "2-digit" }), state: event.extendedProps.state, } });
+        setModalAttr({ title: event.title, mainText: getModalText(event), event: event.toFormData() });
         setShowModal(true);
     }
     function nextMonth() {
@@ -91,19 +93,20 @@ export function Index({ user }: AuthParam) {
         });
         calendarApi.prev();
     }
-    return (<>{
+    return (<>
+    {
         showModal && isEdit
-            ? <Modal close={() => { setIsEdit(false); setShowModal(false); }} {...modalAttr} mainText={<CalendarEditForm defaultValues={modalAttr.event} onCancel={() => { setIsEdit(false); setShowModal(false); }} onSuccess={() => { setIsEdit(false); setShowModal(false); }} />} />
+            ? <Modal {...modalAttr} close={() => { setIsEdit(false); setShowModal(false); }} mainText={<CalendarEditForm defaultValues={modalAttr.event??{}} onCancel={() => { setIsEdit(false); setShowModal(false); }} onSuccess={() => { setIsEdit(false); setShowModal(false); }} />} />
             : showModal
                 ? <Modal close={() => { setShowModal(false); }} okButton={{ label: 'OK', onClick: () => { setShowModal(false); } }} {...modalAttr} />
                 : <></>
     }
         <div className="flex flex-row justify-center gap-8 items-center p-3 bg-white">
             <div onClick={prevMonth} className='p-2 rounded-md active:box-content hover:bg-slate-200 active:bg-slate-300'><FiChevronLeft /></div>
-
             <div className='p-2 rounded-md text-xl hover:bg-slate-200 active:bg-slate-300'>{`${month.getFullYear()}年${month.getMonth() + 1}月`}</div>
             <div onClick={nextMonth} className='p-2 rounded-md hover:bg-slate-200 active:bg-slate-300'><FiChevronRight /></div>
         </div>
+
         <div className="m-1 md:m-6 bg-white overflow-hidden shadow-sm rounded-lgm-3 md:p-6">
             <FullCalendar
                 plugins={[dayGridPlugin]}
