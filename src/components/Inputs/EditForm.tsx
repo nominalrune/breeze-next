@@ -67,7 +67,6 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 		_setData({ ...data, [propName]: value });
 	}
 
-
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 		// console.log({ data });
 		setData(

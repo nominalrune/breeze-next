@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EditForm from '@/components/Inputs/EditForm';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // import create from '@/models/Task/create';
 
 import type {Property} from '@/components/Inputs/EditForm';
@@ -8,16 +8,26 @@ import type {AuthParam} from '@/models/User';
 
 
 export function Create({user}:AuthParam) {
+	const navigate=useNavigate();
     const [errors, setErrors]=useState<any>()
-    function handleSuccess(res:{data:{data:any,url:string}}) {
-        console.log("handleSuccess",res)
-        const id=res.data.id
-        redirect("/tasks/"+id);
+    function handleSuccess(res:{data:{id:number},url:string}) {
+        const id=res.data.id;
+        navigate("/tasks/"+id);
     }
     const props:Property[]=[
+		{
+			propName:'type',
+			type:'text',
+			defaultValue:"task",
+		},
         {
-            type:'text',
             propName:'title',
+            type:'text',
+            defaultValue:"",
+        },
+        {
+            propName:'due',
+            type:'date',
             defaultValue:"",
         },
         {
