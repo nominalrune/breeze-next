@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { axios } from '@/lib/useAxios';
+import { api } from '@/hooks/useApi';
 import type { AuthParam } from '@/models/User';
-import type { Record } from '@/models/Record';
-import type { Task } from '@/models/Task';
+import type { RecordDTO } from '@/models/Record';
+import type { TaskDTO } from '@/models/Task';
 import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton';
-import { CalendarEvent, CalendarEventDTO, CalendarEventInput } from '@/models/CalendarEvent';
-import { FiPlus, FiChevronLeft, FiChevronRight, FiRepeat, FiEdit, FiEdit2 } from 'react-icons/fi';
-
+import type { CalendarEvent, CalendarEventDTO, CalendarEventInput } from '@/models/CalendarEvent';
+import {  FiChevronLeft, FiChevronRight, FiEdit, FiEdit2 } from 'react-icons/fi';
+import type { CalendarEntry } from '@/models/CalendarEntry';
 import CalendarEditForm from '@/components/Calendar/CalendarEditForm';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import type { EventInput, EventClickArg, EventApi, CalendarApi } from '@fullcalendar/core';
+import MonthSelector from '@/components/MonthSelector';
+import { useMonth } from '@/hooks/useMonth';
 
 import jaLocale from '@fullcalendar/core/locales/ja';
 import { Modal, ModalProps } from '@/components/Modals/Modal';
@@ -27,15 +29,15 @@ interface EventClickInfo<T> extends EventClickArg {
 }
 
 export function Index({ user }: AuthParam) {
-    const [events, setEvents] = useState<CalendarEventInput[]>([]);
+    const [events, setEvents] = useState<CalendarEntry[]>([]);
     const params = Object.fromEntries([...new URL(location.href).searchParams.entries()]);
-    const [month, setMonth] = useState(params.start ? new Date(params.start) : (() => { const d = new Date(0); d.setFullYear(new Date().getFullYear()); d.setMonth(new Date().getMonth()); return d; })());
+    const {month, setNextMonth, setPrevMonth} = useMonth(params.start ? new Date(params.start) : new Date());
     const [calendarApi, setCalendarApi] = useState<CalendarApi>();
     useEffect(() => {
         const url = encodeURI(`/api/calendar?display_type=month&start=${month.getFullYear()}-${month.getMonth() + 1}`);
-        axios.get<CalendarEventDTO[]>(url).then(({ data }) => {
-            console.log("fetched:", data, data.map(event => new CalendarEvent(event).toEvent()));
-            setEvents(data.map(event => new CalendarEvent(event).toEvent()));
+        api.get<CalendarEntry[]>(url).then(({ data }) => {
+            console.log("fetched:", data);
+            setEvents(data);
         });
     }, [month]);
 
@@ -71,26 +73,18 @@ export function Index({ user }: AuthParam) {
     function handleEventClick(p: EventClickInfo<CalendarEventInput>) {
 		const {event }:{event:CalendarEventInput}=p;
         console.log({ event });
-        setModalAttr({ title: event.title, mainText: getModalText(event), event: event.extendedProps?.toFormData() });
+        setModalAttr({ title: event.title, mainText: getModalText(event), event: event.extendedProps });
         setShowModal(true);
     }
     function nextMonth() {
         if (!calendarApi) return;
-        setMonth(month => {
-            const next = new Date(month.getTime());
-            next.setMonth(month.getMonth() + 1);
-            return next;
-        });
+        setNextMonth();
         calendarApi.next();
     }
     function prevMonth() {
         console.log("prev");
         if (!calendarApi) return;
-        setMonth(month => {
-            const prev = new Date(month.getTime());
-            prev.setMonth(month.getMonth() - 1);
-            return prev;
-        });
+        setPrevMonth();
         calendarApi.prev();
     }
     return (<>
@@ -101,11 +95,7 @@ export function Index({ user }: AuthParam) {
                 ? <Modal close={() => { setShowModal(false); }} okButton={{ label: 'OK', onClick: () => { setShowModal(false); } }} {...modalAttr} />
                 : <></>
     }
-        <div className="flex flex-row justify-center gap-8 items-center p-3 bg-white">
-            <div onClick={prevMonth} className='p-2 rounded-md active:box-content hover:bg-slate-200 active:bg-slate-300'><FiChevronLeft /></div>
-            <div className='p-2 rounded-md text-xl hover:bg-slate-200 active:bg-slate-300'>{`${month.getFullYear()}年${month.getMonth() + 1}月`}</div>
-            <div onClick={nextMonth} className='p-2 rounded-md hover:bg-slate-200 active:bg-slate-300'><FiChevronRight /></div>
-        </div>
+        <MonthSelector month={month} onClickNext={nextMonth} onClickPrevious={prevMonth} />
 
         <div className="m-1 md:m-6 bg-white overflow-hidden shadow-sm rounded-lgm-3 md:p-6">
             <FullCalendar

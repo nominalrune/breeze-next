@@ -1,5 +1,6 @@
 import Navigation from '@/Layouts/Navigation';
 
+import { Toaster } from 'react-hot-toast';
 import { Outlet } from "react-router-dom";
 import { ErrorBoundary } from './ErrorBoundary';
 import { useContext } from 'react';
@@ -9,6 +10,7 @@ const AppLayout = ({user}:AuthParam) => {
     return user
         ? <div className="min-h-screen bg-gray-100">
             <Navigation user={user} />
+			<Toaster />
             <main>
                 <ErrorBoundary>
                     <Outlet />

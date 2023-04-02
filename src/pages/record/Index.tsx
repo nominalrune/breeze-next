@@ -1,30 +1,47 @@
 import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton';
-import list from '@/models/Task/list';
-import type { Task } from '@/models/Task';
+
+import { Record, RecordDTO } from '@/models/Record';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-export function Index() {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    useEffect(() => {
-        list().then(data => {
+import type { UserDTO } from '@/models/User';
+import { api, csrf } from '@/hooks/useApi';
+import { useMonth } from '@/hooks/useMonth';
+import MonthSelector from '@/components/MonthSelector';
+import { Table } from '@/components/Table';
+import { Comments } from '@/components/Comments/Comments';
+import { Comment } from '@/models/Comment';
+
+export function Index({user}:{user:UserDTO}) {
+    const [records, setRecords] = useState<RecordDTO[]>([]);
+	const {month, setNextMonth, setPrevMonth} = useMonth( new Date());
+	function update(){
+		api.get<RecordDTO[]>(`/api/records?month=${month.getFullYear()}-${month.getMonth()+1}`).then(({data}) => {
             console.log({data});
-            setTasks(data)
+            setRecords(data);
         });
-    }, []);
+	}
+    useEffect(() => {
+		setRecords([]);
+		update();
+    }, [month]);
     return (
         <div>
+			<div>
+				<MonthSelector month={month} onClickNext={setNextMonth} onClickPrevious={setPrevMonth} />
             <h1 className='p-3 text-3xl '>
-                Tasks
-            </h1>
+                records
+            </h1></div>
+			{/* <Table items={records} keys={['date',"title",'time','description']} /> */}
             {
-                tasks?tasks.map(task => (
-                    <Link key={"task" + task.id} to={'/tasks/'+task.id} className='block m-6 p-3 bg-white shadow roundeed hover:bg-slate-50'>
-                        <h2 className='p-3 text-xl'>{task.title}</h2>
-                        <p className='p-1  text-slate-800' >{task.description}</p>
-                    </Link>
+                records&&records?.length>0?records.map(record => (
+                    <div key={"records" + record.id} className='block m-6 p-3 bg-white shadow rounded'>
+                        <Link to={'/records/'+record.id}><h2 className='p-3 text-xl underline decoration-blue-300'>{record.title}</h2></Link>
+                        <p className='px-6 text-slate-800' >{record.description}</p>
+						<Comments commentable={record} loginUser={user} update={update} />
+                    </div>
                 )):<>no data found</>
             }
-            <Link to={'/tasks/create'}><FloatingActionButton icon="+" /></Link>
+            <Link to={'/records/create'}><FloatingActionButton icon="+" /></Link>
         </div>
     );
 }

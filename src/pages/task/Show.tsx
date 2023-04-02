@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { axios } from '@/lib/useAxios';
-import type { Task, TaskDTO } from '@/models/Task';
+import { api } from '@/hooks/useApi';
+import type { TaskDTO, Task } from '@/models/Task';
 import type { AuthParam } from '@/models/User';
 import TextInput from '@/components/Inputs/TextInput';
 import Button from '@/components/Buttons/Button';
@@ -124,7 +124,7 @@ export function Show({ user }: AuthParam) {
 	const { taskId } = useParams();
 
 	useEffect(() => {
-		axios.get('/api/tasks/' + taskId).then((res) => {
+		api.get('/api/tasks/' + taskId).then((res) => {
 			setTask(res.data);
 		});
 	}, [taskId]);
@@ -138,7 +138,7 @@ export function Show({ user }: AuthParam) {
 	async function handleSubmit(task: TaskDTO) {
 		setIsSubmitting(true);
 		try {
-			await axios.post('/api/tasks/' + taskId, task);
+			await api.post('/api/tasks/' + taskId, task);
 			setTask(task);
 			setIsEditing(false);
 		} catch (error) {

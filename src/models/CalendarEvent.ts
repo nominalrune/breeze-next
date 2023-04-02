@@ -1,10 +1,11 @@
-import type { User } from './User';
+import type { UserDTO } from './User';
 import type {EventInput} from '@fullcalendar/core';
 import type { OmitMany } from '../utiltype';
 
 export type CalendarEventInput=EventInput&OmitMany<CalendarEvent,['id',"toEvent"]>&{end:Date,start:Date,toFormData:()=>CalendarEventDTO};
 
 export class CalendarEvent {
+	public class = "App\\Models\\CalendarEvent" as "App\\Models\\CalendarEvent";
 	public id?: number;
 	public title: string;
 	public state:string;
@@ -12,7 +13,7 @@ export class CalendarEvent {
 	public end_at: Date;
 	public description: string;
 	public user_id: number;
-	public user?:User;
+	public user?:UserDTO;
 	public created_at?: Date;
 	public updated_at?: Date;
 	constructor(dto: CalendarEventDTO) {
@@ -66,7 +67,7 @@ export interface CalendarEventDTO {
 	end_at: string;
 	description?: string;
 	user_id: number;
-	user?:User;
+	user?:UserDTO;
 	created_at?: string;
 	updated_at?: string;
 }

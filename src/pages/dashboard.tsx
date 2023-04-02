@@ -1,6 +1,6 @@
 import AppLayout from '@/Layouts/AppLayout'
-import type{ User } from '@/models/User'
-const Dashboard = ({user}:{user?:User}) => {
+import type{ UserDTO } from '@/models/User'
+const Dashboard = ({user}:{user?:UserDTO}) => {
     return (
 
             <div className="py-12">

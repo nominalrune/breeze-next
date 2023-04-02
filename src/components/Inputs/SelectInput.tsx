@@ -1,8 +1,8 @@
 import type { ChangeEvent, } from 'react';
 import Select from 'react-select';
 export default function SelectInput(
-    { name, id, value, className, options, required, isFocused, multiple, handleChange }: {
-		 type: string, name: string, id?: string, value?: string|undefined, className?: string, options: [label: string, value: any][], required?: boolean, autoComplete?: string, isFocused?: boolean, multiple?: boolean, handleChange: (e: ChangeEvent<HTMLInputElement>) => any; }
+    { name, id, value, className, options, required, isFocused, multiple, onChange, ...rest }: {
+		 type: string, name: string, id?: string, value?: string|undefined, className?: string, options: [label: string, value: any][], required?: boolean, autoComplete?: string, isFocused?: boolean, multiple?: boolean, onChange: (e: ChangeEvent<HTMLInputElement>) => any; }
 ) {
     const _options = options.map(([label, value]) => ({ label, value }));
     return (
@@ -31,9 +31,10 @@ export default function SelectInput(
                     }),
                 }}
                 required={required}
-                onChange={(e) => {e&&handleChange({ target: {value: e?.length ? e.map(i => i.value) : e?.value ?? e } }); }}
+                onChange={(e) => {e&&onChange({ target: {value: e?.length ? e.map(i => i.value) : e?.value ?? e } }); }}
                 isMulti={multiple}
                 options={_options}
+				{...rest}
             />
         </div>
     );

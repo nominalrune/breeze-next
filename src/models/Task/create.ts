@@ -1,8 +1,8 @@
-import {axios,csrf} from '@/lib/useAxios';
+import {api,csrf} from '@/hooks/useApi';
 import type { Dispatch } from 'react';
 
-import type { User } from '@/models/User';
-import type { Task, TaskDTO } from '@/models/Task';
+import type { UserDTO } from '@/models/User';
+import type { TaskDTO, TaskDTO } from '@/models/Task';
 type Params = {
     task: Omit<TaskDTO, "id">,
     setErrors?: Dispatch<React.SetStateAction<any>>,
@@ -11,7 +11,7 @@ type Params = {
 export default async function create({ task, setErrors }: Params) {
     await csrf();
     try {
-        const result = await axios.post<TaskDTO>('/api/tasks', task);
+        const result = await api.post<TaskDTO>('/api/tasks', task);
         return result.data;
     } catch (error) {
         // setErrors(error.response.data.errors);

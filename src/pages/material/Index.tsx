@@ -1,10 +1,10 @@
 import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton';
 import list from '@/models/Task/list';
-import type { Task } from '@/models/Task';
+import type { TaskDTO } from '@/models/Task';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 export function Index() {
-    const [tasks, setTasks] = useState<Task[]>([]);
+    const [tasks, setTasks] = useState<TaskDTO[]>([]);
     useEffect(() => {
         list().then(data => {
             console.log({data});
