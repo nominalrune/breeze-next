@@ -2,7 +2,7 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import Button from '@/components/Buttons/PrimaryButton'
 import Input from '@/components/Input'
-import InputError from '@/components/InputError'
+import InputError from '@/components/Inputs/InputError'
 import Label from '@/components/Label'
 import { Link } from "react-router-dom";
 import { AuthContext } from '@/contexts/AuthContext'

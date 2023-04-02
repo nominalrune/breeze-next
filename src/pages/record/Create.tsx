@@ -1,47 +1,57 @@
 import { useState } from 'react';
 import EditForm from '@/components/Inputs/EditForm';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import create from '@/models/Task/create';
 
-import type {Property} from '@/components/Inputs/EditForm';
-import type {AuthParam} from '@/models/User';
+import type { Property } from '@/components/Inputs/EditForm';
+import type { AuthParam } from '@/models/User';
+import toast from 'react-hot-toast';
 
-
-export function Create({user}:AuthParam) {
-    const [errors, setErrors]=useState<any>()
-    function handleSuccess(res:{data:{data:any,url:string}}) {
-        console.log("handleSuccess",res)
-        const id=res.data.id
-        redirect("/tasks/"+id);
-    }
-    const props:Property[]=[
-        {
-            type:'text',
-            propName:'title',
-            defaultValue:"",
-        },
-        {
-            type:'textarea',
-            propName:'description',
-            defaultValue:"",
-        },{
-            type:'number',
-            propName:"status",
-            defaultValue:0
-        },
-        {
-            type:"number",
-            propName:"parent_task_id",
-            defaultValue:""
-        },
-        {
-            type:"number",
-            propName:"assigned_to_id",
-            defaultValue:user?.id||"",
-        }
-    ];
-    return (
-        <div className="m-3 p-3">
-        <EditForm properties={props} method="post" route='/api/tasks' submitLabel="submit" handleSuccess={handleSuccess} />
-    </div>);
+export function Create({ user }: AuthParam) {
+	const [errors, setErrors] = useState<any>();
+	const navigate = useNavigate();
+	function handleSuccess(res: { data: { data: any, url: string; }; }) {
+		console.log("handleSuccess", res);
+		const id = res.data.id;
+		navigate("/records/" + id);
+		toast.success("new record created!");
+	}
+	const props: Property[] = [
+		{
+			type: 'text',
+			propName: 'title',
+			defaultValue: "",
+		},
+		{
+			type: 'textarea',
+			propName: 'description',
+			defaultValue: "",
+		},
+		{
+			type: 'number',
+			propName: "status",
+			defaultValue: 0
+		},
+		{
+			type: 'date',
+			propName: "date",
+			label: "date",
+			defaultValue: new Date().toISOString().slice(0,10)
+		},
+		{
+			type: 'number',
+			propName: "time",
+			label: "time",
+			defaultValue: 5,
+			attributes:{
+				min:0,
+				max:60*12,
+				step:5
+			}
+		},
+	];
+	return (
+		<div className="m-3 p-3">
+			<EditForm properties={props} method="post" route='/api/records' submitLabel="submit" handleSuccess={handleSuccess} />
+		</div>);
 }

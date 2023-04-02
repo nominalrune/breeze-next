@@ -3,14 +3,15 @@ import Dropdown from '@/components/Dropdown'
 import { Link } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import NavLink from '@/components/NavLink'
+// import { NavLink } from "react-router-dom";
 import ResponsiveNavLink, {
     ResponsiveNavButton,
 } from '@/components/ResponsiveNavLink'
 import { DropdownButton } from '@/components/DropdownLink'
 import { AuthContext } from '@/contexts/AuthContext'
 import { useContext, useState } from 'react';
-import type { User } from '@/models/User';
-const Navigation = ({ user }:{user:User}) => {
+import type { UserDTO } from '@/models/User';
+const Navigation = ({ user }:{user:UserDTO}) => {
     const location = useLocation();
     const { logout } = useContext(AuthContext)
     const [open, setOpen] = useState(false)
@@ -31,28 +32,32 @@ const Navigation = ({ user }:{user:User}) => {
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
                                 to="/dashboard"
-                                active={location.pathname=== '/dashboard'}>
+                                // active={route().current('dashboard')}
+								>
                                 Dashboard
                             </NavLink>
                         </div>
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
                                 to="/tasks"
-                                active={location.pathname=== '/tasks'}>
+                                // active={route().current('tasks.*')}
+								>
                                 Tasks
                             </NavLink>
                         </div>
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
                                 to="/records"
-                                active={location.pathname=== '/records'}>
+                                // active={route().current('records.*')}
+								>
                                 Records
                             </NavLink>
                         </div>
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
                                 to="/calendar"
-                                active={location.pathname=== '/calendar'}>
+                                // active={route().current('calendar.*')}
+								>
                                 calendar
                             </NavLink>
                         </div>

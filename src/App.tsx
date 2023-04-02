@@ -16,6 +16,9 @@ import { Show as TaskShow } from '@/pages/task/Show';
 import { Index as Calendar } from '@/pages/calendar/Index';
 import { Create as CalendarCreate } from '@/pages/calendar/Create';
 import { Show as CalendarShow } from '@/pages/calendar/Show';
+import { Index as Record } from '@/pages/record/Index';
+import { Create as RecordCreate } from '@/pages/record/Create';
+import { Show as RecordShow } from '@/pages/record/Show';
 
 export default function App() {
     const { user } = useContext(AuthContext);
@@ -36,6 +39,11 @@ export default function App() {
                     <Route index element={<Calendar user={user}/>} />
                     <Route path="create" element={<CalendarCreate user={user} />} />
                     <Route path=":calendarId" element={<CalendarShow user={user} />} />
+                </Route>
+                <Route path="records">
+                    <Route index element={<Record user={user}/>} />
+                    <Route path="create" element={<RecordCreate user={user} />} />
+                    <Route path=":recordId" element={<RecordShow user={user} />} />
                 </Route>
                 {/* </Route> */}
                 {/* <Route path="dashboard" element={<ForceLogin><Dashboard /></ForceLogin>} />
