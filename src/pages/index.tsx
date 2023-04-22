@@ -1,11 +1,10 @@
 import 'tailwindcss/tailwind.css';
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from '@/contexts/AuthContext';
 import Button from '@/components/Buttons/PrimaryButton';
-import type {AuthParam} from '@/models/User';
-
-export default function Home({user}:AuthParam) {
+import { useAuthContext,Auth} from '@/hooks/useAuth';
+export default function Home() {
+	const {user} = useAuthContext();
 
     return (
         <>

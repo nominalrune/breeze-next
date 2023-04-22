@@ -8,7 +8,7 @@ import type { TaskDTO } from '@/models/Task';
 export default async function list() {
     await csrf();
     try {
-        const result = await api.get('/api/tasks');
+        const result = await api.get('/tasks');
         // console.log("@list.ts, result",result)
         return result.data;
     } catch (error) {

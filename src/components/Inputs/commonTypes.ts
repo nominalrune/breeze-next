@@ -2,11 +2,10 @@ export interface InputAttr<T> {
 	type: T,
 	name: string,
 	label?: React.ReactNode,
-	defaultValue: T extends 'checkbox' ? boolean : string|number|undefined,
+	defaultValue?: T extends 'checkbox' ? boolean : string|number|undefined,
 	required?: boolean,
 	attributes?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLInputElement>, HTMLInputElement>,
 }
-
 export type Primitive = string | number | boolean;
 
 export type F<N=1> = InputAttr<InputType> | SelectAttr | CheckboxAttr | TextareaAttr | NestedAttr<N> | NestedIterableAttr<N>;

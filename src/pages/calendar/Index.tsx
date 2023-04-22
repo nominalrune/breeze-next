@@ -34,7 +34,7 @@ export function Index({ user }: AuthParam) {
     const {month, setNextMonth, setPrevMonth} = useMonth(params.start ? new Date(params.start) : new Date());
     const [calendarApi, setCalendarApi] = useState<CalendarApi>();
     useEffect(() => {
-        const url = encodeURI(`/api/calendar?display_type=month&start=${month.getFullYear()}-${month.getMonth() + 1}`);
+        const url = encodeURI(`/calendar?display_type=month&start=${month.getFullYear()}-${month.getMonth() + 1}`);
         api.get<CalendarEntry[]>(url).then(({ data }) => {
             console.log("fetched:", data);
             setEvents(data);

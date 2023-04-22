@@ -1,6 +1,6 @@
 import React from 'react';
 export class ErrorBoundary extends React.Component {
-    state={ hasError: false, error:undefined, errorInfo:undefined };
+	state={ hasError: false, error:undefined, errorInfo:undefined };
     constructor(props: any) {
         super(props);
     }

@@ -8,7 +8,7 @@ export function Show({user}:{user?:UserDTO}){
 	const [event,setEvent]=useState<CalendarEvent>();
 	let { calendarId } = useParams();
 	useEffect(()=>{
-		api.get('/api/calendar/'+calendarId).then(res=>{
+		api.get('/calendar/'+calendarId).then(res=>{
 			console.log({res})
 			setEvent(res.data);
 		})

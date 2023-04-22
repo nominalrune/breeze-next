@@ -42,6 +42,6 @@ export function Create({user}:AuthParam) {
     ];
     return (
         <div className="m-3 p-3">
-        <EditForm properties={props} method="post" route='/api/tasks' submitLabel="submit" handleSuccess={handleSuccess} />
+        <EditForm properties={props} method="post" route='/tasks' submitLabel="submit" handleSuccess={handleSuccess} />
     </div>);
 }

@@ -33,7 +33,7 @@ export default function TextInput(
 					}
 					onChange={onChange}
 					required={required}
-					style={{fontSize:"inherit"}}
+					style={{ fontSize: "inherit" }}
 				/>
 				: <input
 					{...rest}
@@ -43,9 +43,9 @@ export default function TextInput(
 					value={value}
 					className={
 						`border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1  ` +
-						className
+						className + " " + (type === "checkbox" ? "w-5 h-5" : "")
 					}
-					style={{fontSize:"inherit"}}
+					style={{ fontSize: "inherit" }}
 					required={required}
 					onChange={onChange}
 				/>}

@@ -6,7 +6,7 @@ export function Show({user}:Param){
 	const [task,setTask]=useState<TaskDTO>();
 	let { taskId } = useParams();
 	useEffect(()=>{
-		api.get('/api/tasks/'+taskId).then(res=>{
+		api.get('/tasks/'+taskId).then(res=>{
 			console.log({res})
 			setTask(res.data);
 		})

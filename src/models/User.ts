@@ -1,3 +1,4 @@
+
 export interface UserDTO{
     id: number,
     name: string,
@@ -23,8 +24,4 @@ export class User{
 		this.updated_at = new Date(user.updated_at);
 	}
 
-}
-
-export interface AuthParam{
-    user:UserDTO
 }

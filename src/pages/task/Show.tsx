@@ -124,7 +124,7 @@ export function Show({ user }: AuthParam) {
 	const { taskId } = useParams();
 
 	useEffect(() => {
-		api.get('/api/tasks/' + taskId).then((res) => {
+		api.get('/tasks/' + taskId).then((res) => {
 			setTask(res.data);
 		});
 	}, [taskId]);
@@ -138,7 +138,7 @@ export function Show({ user }: AuthParam) {
 	async function handleSubmit(task: TaskDTO) {
 		setIsSubmitting(true);
 		try {
-			await api.post('/api/tasks/' + taskId, task);
+			await api.post('/tasks/' + taskId, task);
 			setTask(task);
 			setIsEditing(false);
 		} catch (error) {

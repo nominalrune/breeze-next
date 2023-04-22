@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import NestedForm, { Attr, DataModel } from '@/components/Inputs/NestedForm';
 import type { TaskDTO } from "@/models/Task";
-import type { Record } from "@/models/Record";
+import type { Record, RecordDTO } from "@/models/Record";
 import type { UserDTO } from "@/models/User";
 import { Comment, type CommentDTO, type Commentable } from '@/models/Comment';
-
+import SkeletonLine from '../Skeletons/SkeletonLine';
 import toast from 'react-hot-toast';
 import { FaRegCommentDots } from 'react-icons/fa';
+import SkeletonCard from '../Skeletons/SkeletonCard';
 
 type CommentsParams<T extends Commentable> = {
 	commentable: T,
-	loginUser: UserDTO,
+	loginUser: UserDTO|undefined,
 	update: () => void,
 	open?: boolean;
 };
@@ -18,13 +19,14 @@ type CommentsParams<T extends Commentable> = {
 export function Comments<T extends Commentable>({ commentable, loginUser, update, open = false }: CommentsParams<T>) {
 	const [editing, setEditing] = useState<number>();
 	const { comments = [] } = commentable;
-	if (!commentable || !loginUser) return (<>woops</>);
+	if (!commentable ) return (<div className="m-3"><SkeletonLine/></div>);
 	return (
 		<details open={open} className="group mx-3 p-3">
 			<summary className="m-1 list-none flex justify-end">
 				<div className="p-2 flex items-center gap-1 text-slate-500 group-open:text-slate-300 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer">
 					<FaRegCommentDots className="inline" />{comments.length}
-				</div></summary>
+				</div>
+			</summary>
 			{
 				comments.map((comment) => {
 					const date = new Date(comment.updated_at);
@@ -41,7 +43,7 @@ export function Comments<T extends Commentable>({ commentable, loginUser, update
 								{editing === comment.id
 									? <Edit comment={comment} commentable={commentable} setEditing={setEditing} update={update} />
 									: <div className="m-2 col-span-3 row-span-3 whitespace-pre-wrap relative">
-										{loginUser.id === comment.user_id && <div className="absolute right-2 cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setEditing(comment.id)}>編集</div>}
+										{loginUser&&loginUser.id === comment.user_id && <div className="absolute right-2 cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setEditing(comment.id)}>編集</div>}
 										{comment.body}
 									</div>
 								}
@@ -49,18 +51,19 @@ export function Comments<T extends Commentable>({ commentable, loginUser, update
 						</div>);
 				})
 			}
-			<div className="flex items-start">
+			{loginUser?<div className="flex items-start">
 				<img className="m-2 aspect-square" src={"/img/user.png"} alt="" width={48} height={48} />
 				<div className="w-full">
 					<div className="m-2">{loginUser.name}</div>
 					<Edit commentable={commentable} update={update} />
 				</div>
-			</div>
+			</div>:<SkeletonCard/>}
 		</details>
 	);
 }
-interface EditProp<T> {
-	commentable: T, className?: string,
+interface EditProp<T extends Commentable> {
+	commentable: T,
+	className?: string,
 	comment?: CommentDTO<T>, setEditing?: (p: any) => void,
 	update: () => void;
 }

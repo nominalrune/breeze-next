@@ -11,7 +11,7 @@ type Params = {
 export default async function create({ task, setErrors }: Params) {
     await csrf();
     try {
-        const result = await api.post<TaskDTO>('/api/tasks', task);
+        const result = await api.post<TaskDTO>('/tasks', task);
         return result.data;
     } catch (error) {
         // setErrors(error.response.data.errors);

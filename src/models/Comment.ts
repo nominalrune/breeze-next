@@ -20,13 +20,13 @@ export interface CommentDTO<T extends Commentable>{
 export class Comment<T extends Commentable>{
 	public type = "App\\Models\\Comment";
 	public static create<T extends Commentable>(data:Partial<CommentDTO<T>>){
-		return api.post('/api/comments', data);
+		return api.post('/comments', data);
 	}
 	public static update<T extends Commentable>(data:CommentDTO<T>){
-		return api.put('/api/comments/'+data.id, data);
+		return api.put('/comments/'+data.id, data);
 	}
 	public static delete<T extends Commentable>(data:Partial<CommentDTO<T>>){
-		return api.delete('/api/comments/'+data.id);
+		return api.delete('/comments/'+data.id);
 	}
 
 	id: number;

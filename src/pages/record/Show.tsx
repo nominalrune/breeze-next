@@ -2,14 +2,14 @@ import {useEffect,useState} from 'react';
 import { useParams } from 'react-router-dom';
 import {api} from '@/hooks/useApi';
 import { Record, type RecordDTO } from '@/models/Record';
-import type {AuthParam} from '@/models/User';
+// import type {AuthParam} from '@/models/User';
 import { Comments } from '@/components/Comments/Comments';
 import { Comment } from '@/models/Comment';
 export function Show({user}:AuthParam){
 	const [record,setRecord]=useState<Record>();
 	let { recordId } = useParams();
 	function update(){
-		api.get('/api/records/'+recordId).then(res=>{
+		api.get('/records/'+recordId).then(res=>{
 			console.log({res})
 			setRecord(Record.fromDTO(res.data));
 		})
