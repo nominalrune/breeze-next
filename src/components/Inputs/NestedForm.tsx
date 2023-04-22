@@ -1,25 +1,29 @@
 import DynamicList from './DynamicList';
 import * as React from 'react';
 import type {
-	F, FormModel, DataModel, DataObj
+	F, DataModel, DataObj,NestedIterableAttr,NestedAttr, FormModel
 } from './commonTypes';
 import TextInput from '@/components/Inputs/TextInput';
 import SelectInput from '@/components/Inputs/SelectInput';
 import InputLabel from '@/components/Inputs/InputLabel';
 import Button from '@/components/Buttons/Button';
-export type Attr<N extends number = 1> =F<N>;
-export { DataModel };
+// export type Attr<N extends number = 1> =F<N>;
+export { DataModel,NestedIterableAttr,NestedAttr,FormModel };
 type OnClick<T extends object> = (data: { [key in keyof T]: T[key] }, functions?: { clear: () => void; }) => any;
-
-type Property<T extends Attr<N>[], N extends number> = {
+type CountF<T> =T extends FormModel<1>?1:T extends FormModel<2>?2:T extends FormModel<3>?3:T extends FormModel<4>?4:T extends FormModel<5>?5:T extends FormModel<6>?6:T extends FormModel<7>?7:T extends FormModel<8>?8:T extends FormModel<9>?9:T extends FormModel<10>?10:T extends FormModel<11>?11:T extends FormModel<12>?12:T extends FormModel<13>?13:T extends FormModel<14>?14:T extends FormModel<15>?15:T extends FormModel<16>?16:T extends FormModel<17>?17:T extends FormModel<18>?18:T extends FormModel<19>?19:T extends FormModel<20>?20:T extends FormModel<21>?21:T extends FormModel<22>?22:T extends FormModel<23>?23:T extends FormModel<24>?24:T extends FormModel<25>?25:T extends FormModel<26>?26:T extends FormModel<27>?27:T extends FormModel<28>?28:T extends FormModel<29>?29:T extends FormModel<30>?30:T extends FormModel<31>?31:T extends FormModel<32>?32:T extends FormModel<33>?33:T extends FormModel<34>?34:T extends FormModel<35>?35:T extends FormModel<36>?36:T extends FormModel<37>?37:T extends FormModel<38>?38:T extends FormModel<39>?39:T extends FormModel<40>?40:T extends FormModel<41>?41:T extends FormModel<42>?42:T extends FormModel<43>?43:44;
+type Property<T extends Readonly<FormModel<N>>,N extends number> = {
 	properties: T;
 	level?: number;
-	primaryAction?: { label: React.ReactNode, onClick: OnClick<{ [key in keyof T[number]]: T[number][key]; }>; };
-	secondaryAction?: { label: React.ReactNode, onClick: OnClick<{ [key in keyof T[number]]: T[number][key]; }>; };
-	deleteAction?: { label: React.ReactNode, onClick: OnClick<{ [key in keyof T[number]]: T[number][key]; }>; };
-	cancelAction?: { label: React.ReactNode, onClick: OnClick<{ [key in keyof T[number]]: T[number][key]; }>; };
+	// primaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	// secondaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	// deleteAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	// cancelAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	primaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	secondaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	deleteAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	cancelAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
 };
-export default function NestedForm<T extends Attr<N>[], N extends number>({ properties, primaryAction, secondaryAction, deleteAction, cancelAction, level = 0 }: Property<T, N>) {
+export default function NestedForm<T extends Readonly<FormModel<N>>,N  extends number>({ properties, primaryAction, secondaryAction, deleteAction, cancelAction, level = 0 }: Property<T,N>) {
 	function initialize(properties: T) {
 		return properties.reduce((acc, curr) => {
 			if (curr.type === 'nested-iterable') {

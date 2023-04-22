@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router-dom';
 // import create from '@/models/Task/create';
 
 import type { Property } from '@/components/Inputs/EditForm';
-import type { AuthParam } from '@/models/User';
 import toast from 'react-hot-toast';
 
-export function Create({ user }: AuthParam) {
+export function Create() {
 	const [errors, setErrors] = useState<any>();
 	const navigate = useNavigate();
 	function handleSuccess(res: { data: { data: any, url: string; }; }) {
@@ -26,11 +25,6 @@ export function Create({ user }: AuthParam) {
 			type: 'textarea',
 			propName: 'description',
 			defaultValue: "",
-		},
-		{
-			type: 'number',
-			propName: "status",
-			defaultValue: 0
 		},
 		{
 			type: 'date',

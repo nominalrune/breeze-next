@@ -1,12 +1,12 @@
 import {useEffect,useState} from 'react';
 import { useParams } from 'react-router-dom';
-import {api} from '@/hooks/useApi';
+import {axios} from '@/lib/axios';
 import type { TaskDTO } from '@/models/Task';
 export function Show({user}:Param){
 	const [task,setTask]=useState<TaskDTO>();
 	let { taskId } = useParams();
 	useEffect(()=>{
-		api.get('/tasks/'+taskId).then(res=>{
+		axios.get('/tasks/'+taskId).then(res=>{
 			console.log({res})
 			setTask(res.data);
 		})

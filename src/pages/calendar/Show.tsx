@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import { useParams } from 'react-router-dom';
-import {api} from '@/hooks/useApi';
+import {axios} from '@/lib/axios';
 import type { CalendarEvent } from '@/models/CalendarEvent';
 import type { UserDTO } from '@/models/User';
 
@@ -8,7 +8,7 @@ export function Show({user}:{user?:UserDTO}){
 	const [event,setEvent]=useState<CalendarEvent>();
 	let { calendarId } = useParams();
 	useEffect(()=>{
-		api.get('/calendar/'+calendarId).then(res=>{
+		axios.get('/calendar/'+calendarId).then(res=>{
 			console.log({res})
 			setEvent(res.data);
 		})

@@ -4,21 +4,21 @@ import type { Record, RecordDTO } from '@/models/Record';
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import type { UserDTO } from '@/models/User';
-import { api, csrf } from '@/hooks/useApi';
+import { axios, csrf } from '@/lib/axios';
 import { useMonth } from '@/hooks/useMonth';
 import MonthSelector from '@/components/MonthSelector';
 import { Table } from '@/components/Table';
 import { Comments } from '@/components/Comments/Comments';
 import { Comment } from '@/models/Comment';
-import { UserContext } from '@/services/AuthService';
+import {useAuth} from '@/hooks/useAuth';
 import SkeletonCard from '@/components/Skeletons/SkeletonCard';
 
 export function Index() {
-	const user = useContext(UserContext);
+	const {user}=useAuth();
 	const [records, setRecords] = useState<RecordDTO[]|undefined>();
 	const { month, setNextMonth, setPrevMonth } = useMonth(new Date());
 	function update() {
-		api.get<RecordDTO[]>(`/records?month=${month.getFullYear()}-${month.getMonth() + 1}`).then(({ data }) => {
+		axios.get<RecordDTO[]>(`/records?month=${month.getFullYear()}-${month.getMonth() + 1}`).then(({ data }) => {
 			console.log({ data });
 			setRecords(data);
 		});

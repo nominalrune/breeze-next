@@ -16,10 +16,10 @@ const AppLayout = () => {
 		<Toaster />
 		<main>
 			<ErrorBoundary>
-				<Cartain open={!auth?.user}>
+				{/* <Cartain open={!auth?.user}> */}
 					<Outlet />
-				</Cartain>
-				{!auth?.user&&<WaitAndThenShowLogin auth={auth!}/>}
+				{/* </Cartain>
+				{!auth?.user&&<WaitAndThenShowLogin auth={auth!}/>} */}
 			</ErrorBoundary>
 		</main>
 	</div>;

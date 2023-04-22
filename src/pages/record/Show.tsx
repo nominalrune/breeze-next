@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import { useParams } from 'react-router-dom';
-import {api} from '@/hooks/useApi';
+import {axios} from '@/lib/axios';
 import { Record, type RecordDTO } from '@/models/Record';
 // import type {AuthParam} from '@/models/User';
 import { Comments } from '@/components/Comments/Comments';
@@ -9,7 +9,7 @@ export function Show({user}:AuthParam){
 	const [record,setRecord]=useState<Record>();
 	let { recordId } = useParams();
 	function update(){
-		api.get('/records/'+recordId).then(res=>{
+		axios.get('/records/'+recordId).then(res=>{
 			console.log({res})
 			setRecord(Record.fromDTO(res.data));
 		})

@@ -4,7 +4,7 @@ import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import SecondaryButton from '../Buttons/SecondaryButton';
 import { useState, DetailedHTMLProps, SelectHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
-import { api, csrf } from '@/hooks/useApi';
+import { axios, csrf } from '@/lib/axios';
 import type { Method, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { InputType } from './TextInput';
 export type Params = {
@@ -80,7 +80,7 @@ export default function EditForm({ method, route, properties, urlParams, submitL
 		event.preventDefault();
 		const url = route + (urlParams ?? ""); // FIXME
 		setProcessing(true);
-		api({ method, url, data }).then(res => {
+		axios({ method, url, data }).then(res => {
 			setProcessing(false);
 			console.log("responce: ", res);
 			handleSuccess && handleSuccess(res);

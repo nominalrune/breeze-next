@@ -1,20 +1,18 @@
 import type { TaskDTO } from './Task';
 import type { UserDTO } from './User';
-import type { Topic } from './Topic';
 import type { CommentDTO } from './Comment';
 
 export interface RecordDTO {
-	kind: "App\\Models\\Record";
-	id: number;
+	kind?: "App\\Models\\Record";
+	id: number|string;
 	title: string;
 	description?: string;
-	related_task_id?: number;
+	related_task_id?: number|string;
 	related_task?: TaskDTO;
-	topic_id?:number;
-	topic?:Topic;
+	topic_id?:number|string;
 	date: string;
-	time: number;
-	user_id: number;
+	time: number|string;
+	user_id: number|string;
 	user?: UserDTO;
 	comments?:CommentDTO<RecordDTO>[];
 	created_at: string;
@@ -28,8 +26,6 @@ export class Record {
 	public description?: string;
 	public related_task_id?: number;
 	public related_task?: TaskDTO;
-	public topic_id?:number;
-	public topic?:Topic;
 	public date: Date;
 	public time: number;
 	public user_id: number;
@@ -38,16 +34,14 @@ export class Record {
 	public created_at: Date;
 	public updated_at: Date;
 	constructor(record: RecordDTO) {
-		this.id = record.id;
+		this.id = +record.id;
 		this.title = record.title;
 		this.description = record.description;
-		this.related_task_id = record.related_task_id;
+		this.related_task_id = +(record.related_task_id??0);
 		this.related_task = record.related_task;
-		this.topic_id = record.topic_id;
-		this.topic = record.topic;
 		this.date = new Date(record.date);
-		this.time = record.time;
-		this.user_id = record.user_id;
+		this.time = +record.time;
+		this.user_id = +record.user_id;
 		this.user = record.user;
 		this.comments = record.comments??[];
 		this.created_at = new Date(record.created_at);
@@ -64,8 +58,6 @@ export class Record {
 			description: this.description,
 			related_task_id: this.related_task_id,
 			related_task: this.related_task,
-			topic_id: this.topic_id,
-			topic: this.topic,
 			date: this.date.toISOString(),
 			time: this.time,
 			user_id: this.user_id,

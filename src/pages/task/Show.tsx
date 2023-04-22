@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { api } from '@/hooks/useApi';
+import { axios } from '@/lib/axios';
 import type { TaskDTO, Task } from '@/models/Task';
 import type { AuthParam } from '@/models/User';
 import TextInput from '@/components/Inputs/TextInput';
@@ -10,13 +10,15 @@ import SkeletonLine from '@/components/Skeletons/SkeletonLine';
 import SkeletonLines from '@/components/Skeletons/SkeletonLines';
 import { FiEdit } from 'react-icons/fi';
 import Spinner from '@/components/Skeletons/Spinner';
+import { TaskTree } from '@/components/Task/Tree';
 
 type ViewFrameProps = {
 	title: React.ReactNode;
 	description: React.ReactNode;
+	subtaskArea: React.ReactNode;
 	footer: React.ReactNode;
 };
-function ViewFrame({ title, description, footer }: ViewFrameProps) {
+function ViewFrame({ title, description,subtaskArea, footer }: ViewFrameProps) { // FIXME とんでもない非効率....！
 	return (
 		<div className="m-10 p-6 bg-white rounded">
 			<div className="m-1 flex justify-between items-end">
@@ -26,6 +28,8 @@ function ViewFrame({ title, description, footer }: ViewFrameProps) {
 			<div className="m-3 text-slate-800">
 				{description}
 			</div>
+			<hr />
+			{subtaskArea}
 			<hr />
 			<div className="m-3 flex flex-row-reverse gap-3">
 				{footer}
@@ -49,6 +53,7 @@ function TaskView({ task, onEdit }: TaskViewProps) {
 				</div>
 			</>}
 			description={<div className="m-3 text-slate-800">{task ? task.description : <SkeletonLines subject={false} lines={4} />}</div>}
+			subtaskArea={<div className="m-3 text-slate-800">{task&&task.subtasks? <TaskTree tasks={task.subtasks}/> : <SkeletonLines subject={false} lines={4} />}</div>}
 			footer={task && <div
 				className="m-1 p-2 rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-800"
 				onClick={onEdit}
@@ -102,6 +107,7 @@ function TaskEdit({ task, onCancel, onSubmit, isSubmitting }: TaskEditProps) {
 						/>
 					</div>
 				}
+				subtaskArea={<div className="m-3 text-slate-800">{task&&task.subtasks? <TaskTree tasks={task.subtasks}/> : <SkeletonLines subject={false} lines={4} />}</div>}
 				footer={
 					<>
 						<Button type="submit" disabled={isSubmitting}>
@@ -124,7 +130,7 @@ export function Show({ user }: AuthParam) {
 	const { taskId } = useParams();
 
 	useEffect(() => {
-		api.get('/tasks/' + taskId).then((res) => {
+		axios.get('/tasks/' + taskId).then((res) => {
 			setTask(res.data);
 		});
 	}, [taskId]);
@@ -138,7 +144,7 @@ export function Show({ user }: AuthParam) {
 	async function handleSubmit(task: TaskDTO) {
 		setIsSubmitting(true);
 		try {
-			await api.post('/tasks/' + taskId, task);
+			await axios.post('/tasks/' + taskId, task);
 			setTask(task);
 			setIsEditing(false);
 		} catch (error) {

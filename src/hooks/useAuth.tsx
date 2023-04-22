@@ -1,16 +1,20 @@
-import { axios, csrf } from '@/lib/axios';
-import { useState, useContext, createContext } from 'react';
+import { axios, abort as _abort, csrf } from '@/lib/axios';
+import { useState, useContext, createContext, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import type { UserDTO } from '@/models/User';
 
 
 export const useAuth = () => {
 	const [user, setUser] = useState<UserDTO>();
+	useEffect(() => {
+		prelogin();
+	// 	// return () => {
+	// 	// 	abort();
+	// 	// };
+	},[]);
 	const navigate = useNavigate();
-	const controller = new AbortController();
-	const signal = controller.signal;
 	function abort() {
-		controller.abort();
+		_abort();
 	}
 
 	interface RegisterInputs {
@@ -25,41 +29,33 @@ export const useAuth = () => {
 		remember: boolean;
 	}
 	async function prelogin() {
-		try {
-			await csrf();
-			const res = await axios.get('/login', {signal});
-			console.log("already logged in", res);
-			setUser(res.data.user);
-			return true;
-		}
-		catch (e) {
-			console.log("not logged in", e);
+		const res = await axios.get('/login');
+		if (res.status >= 400) {
+			setUser(()=>undefined);
 			return false;
+		} else if (res.status < 300) {
+			setUser(()=>res.data);
+		return !!res.data;
 		}
 	}
 	async function login(inputs: LoginInputs, navigateIfAuthenticated: string = "/") {
-
-		if(await prelogin()){
+		const {email, password, remember} = inputs;
+		// if (user && user.email !== inputs.email) {
+		// 	await logout();
+		// }
+		if (await prelogin()) {
 			navigate(navigateIfAuthenticated);
 		}
-			await csrf();
-			console.log("login fetch started");
-			try {
-				const res = await axios.post('/login', inputs, {signal});
-				console.log("login fetch finished", res);
-				setUser(()=>res.data.user);
-				console.log({user})
-				navigate(navigateIfAuthenticated);
-			} catch (error) {
-				console.error({ error });
-				// if (error.response.status === 422){setErrors()}
-				// setErrors(error.response.data.errors);
-			}
+		const res = await axios.post("/login", { email, password , remember});
+		if (res.status === 200) {
+			setUser(()=>res.data);
+			navigate(navigateIfAuthenticated);
+		}
 	};
 	const register = async (inputs: RegisterInputs, navigateIfAuthenticated: string = "/") => { //FIXME
 		await csrf();
 		axios
-			.post('/register', inputs, {signal})
+			.post('/register', inputs)
 			.then(res => {
 				setUser(res.data);
 				navigate(navigateIfAuthenticated);
@@ -74,7 +70,7 @@ export const useAuth = () => {
 		await csrf();
 
 		axios
-			.post('/forgot-password', { email }, {signal})
+			.post('/forgot-password', { email })
 			.catch(error => {
 				// if (error.response.status !== 422) throw new Error(error);
 				throw new Error(error);
@@ -85,7 +81,7 @@ export const useAuth = () => {
 		const { token } = useParams();
 		await csrf();
 		axios
-			.post('/reset-password', { token, ...props }, {signal})
+			.post('/reset-password', { token, ...props })
 			.then(response =>
 				navigate('/login?reset=' + btoa(response.data.status)),
 			)
@@ -96,12 +92,12 @@ export const useAuth = () => {
 
 	const resendEmailVerification = () => {
 		axios
-			.post('/email/verification-notification',null, {signal});
+			.post('/email/verification-notification', null);
 	};
 
 	const logout = async () => {
 		if (user) {
-			await axios.post('/logout', {signal});
+			await axios.post('/logout');
 			setUser(undefined);
 		}
 		navigate('/login');
@@ -122,4 +118,4 @@ export const useAuth = () => {
 export type Auth = ReturnType<typeof useAuth>;
 
 export const AuthContext = createContext<Auth>({} as Auth); // FIXME
-export const useAuthContext=()=>useContext(AuthContext);
+export const useAuthContext = () => useContext(AuthContext);

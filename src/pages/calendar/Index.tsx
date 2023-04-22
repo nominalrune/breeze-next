@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { api } from '@/hooks/useApi';
+import { axios } from '@/lib/axios';
 import type { AuthParam } from '@/models/User';
 import type { RecordDTO } from '@/models/Record';
 import type { TaskDTO } from '@/models/Task';
@@ -12,7 +12,7 @@ import type { CalendarEntry } from '@/models/CalendarEntry';
 import CalendarEditForm from '@/components/Calendar/CalendarEditForm';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import type { EventInput, EventClickArg, EventApi, CalendarApi } from '@fullcalendar/core';
+import type { EventInput, EventClickArg, Eventaxios, CalendarApi } from '@fullcalendar/core';
 import MonthSelector from '@/components/MonthSelector';
 import { useMonth } from '@/hooks/useMonth';
 
