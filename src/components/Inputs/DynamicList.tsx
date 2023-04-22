@@ -4,6 +4,7 @@ import TextInput from '@/components/Inputs/TextInput';
 import SelectInput from '@/components/Inputs/SelectInput';
 import { FiX,FiPlus } from 'react-icons/fi';
 import InputLabel from '@/components/Inputs/InputLabel';
+import NestedForm from './NestedForm';
 
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -63,6 +64,19 @@ export default function DynamicList<T extends FormModel<N>, N extends number>({ 
 										/>;
 										case 'checkbox': return <Checkbox {...attr} />;
 										case 'textarea': return <Textarea {...attr} />;
+										case 'nested-iterable': return <DynamicList formModel={field.model}
+										data={item[field.name]}
+										setData={
+											(_value) => {
+											const value =
+												typeof _value == 'function'
+													? _value(item[field.name])
+													: _value;
+											handleChange(item.id, field.name, value)
+										}
+									}
+										unit={field.unit} />;
+										case 'nested': return <div className="m-2 ml-4"><NestedForm properties={field.model} level={field.level} /></div>;
 										default: return <TextInput
 											type={field.type}
 											name={field.name}

@@ -9,7 +9,7 @@ export interface InputAttr<T> {
 
 export type Primitive = string | number | boolean;
 
-export type F = InputAttr<InputType> | SelectAttr | CheckboxAttr | TextareaAttr;
+export type F<N=1> = InputAttr<InputType> | SelectAttr | CheckboxAttr | TextareaAttr | NestedAttr<N> | NestedIterableAttr<N>;
 
 export type Readable<T> = T | Readonly<T>;
 
@@ -39,6 +39,24 @@ export type DataObj<K extends { name: string, type: string; }> = {
 	[name in K['name']]: K['type'] extends 'checkbox' ? boolean : string;
 };
 export type FormModel<N> = N extends 1 ? Readable<F> : N extends 2 ? Readable<[F, F]> : N extends 3 ? Readable<[F, F, F]> : N extends 4 ? Readable<[F, F, F, F]> : N extends 5 ? Readable<[F, F, F, F, F]> : N extends 6 ? Readable<[F, F, F, F, F, F]> : N extends 7 ? Readable<[F, F, F, F, F, F, F]> : N extends 8 ? Readable<[F, F, F, F, F, F, F, F]> : N extends 9 ? Readable<[F, F, F, F, F, F, F, F, F]> : Readable<[F, F, F, F, F, F, F, F, F, F]>;
+
+
+export type NestedIterableAttr<N=number> = {
+	type: 'nested-iterable';
+	name: string;
+	label?: React.ReactNode;
+	defaultValue: DataModel<FormModel<N>, N>[];
+	unit: N;
+	model: FormModel<N>;
+}
+export type NestedAttr<N=number> ={
+	type: 'nested';
+	name: string;
+	label?: React.ReactNode;
+	unit: N;
+	defaultValue: DataModel<FormModel<N>, N>;
+	model: FormModel<N>;
+};
 
 export type TextareaAttr = InputAttr<'textarea'>;
 export interface TextareaParam<T extends WithId<DataObj<{name:U, type:'textarea'}>>, U extends keyof T & string> {
