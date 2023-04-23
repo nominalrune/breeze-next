@@ -10,23 +10,23 @@ import { FaRegCommentDots } from 'react-icons/fa';
 import SkeletonCard from '../Skeletons/SkeletonCard';
 
 type CommentsParams<T extends Commentable> = {
+	className?:string,
 	commentable: T,
-	loginUser: UserDTO|undefined,
+	loginUser: UserDTO | undefined,
 	update: () => void,
 	open?: boolean;
 };
 
-export function Comments<T extends Commentable>({ commentable, loginUser, update, open = false }: CommentsParams<T>) {
+export function Comments<T extends Commentable>({ className='',commentable, loginUser, update, open:_open = false }: CommentsParams<T>) {
+	const [open, setOpen] = useState(_open);
 	const [editing, setEditing] = useState<number>();
 	const { comments = [] } = commentable;
-	if (!commentable ) return (<div className="m-3"><SkeletonLine/></div>);
-	return (
-		<details open={open} className="group mx-3 p-3">
-			<summary className="m-1 list-none flex justify-end">
-				<div className="p-2 flex items-center gap-1 text-slate-500 group-open:text-slate-300 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer">
+	if (!commentable) return (<div className="m-3"><SkeletonLine /></div>);
+	return (<>
+	<div onClick={()=>setOpen((open)=>!open)} className={className+" p-2 inline-flex items-center gap-1 text-slate-500 group-open:text-slate-300 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer"}>
 					<FaRegCommentDots className="inline" />{comments.length}
 				</div>
-			</summary>
+		<details open={open} className="group mx-3 p-3"><summary className='hidden'></summary>
 			{
 				comments.map((comment) => {
 					const date = new Date(comment.updated_at);
@@ -43,7 +43,7 @@ export function Comments<T extends Commentable>({ commentable, loginUser, update
 								{editing === comment.id
 									? <Edit comment={comment} commentable={commentable} setEditing={setEditing} update={update} />
 									: <div className="m-2 col-span-3 row-span-3 whitespace-pre-wrap relative">
-										{loginUser&&loginUser.id === comment.user_id && <div className="absolute right-2 cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setEditing(comment.id)}>編集</div>}
+										{loginUser && loginUser.id === comment.user_id && <div className="absolute right-2 cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setEditing(comment.id)}>編集</div>}
 										{comment.body}
 									</div>
 								}
@@ -51,14 +51,15 @@ export function Comments<T extends Commentable>({ commentable, loginUser, update
 						</div>);
 				})
 			}
-			{loginUser?<div className="flex items-start">
+			{loginUser ? <div className="flex items-start">
 				<img className="m-2 aspect-square" src={"/img/user.png"} alt="" width={48} height={48} />
 				<div className="w-full">
 					<div className="m-2">{loginUser.name}</div>
 					<Edit commentable={commentable} update={update} />
 				</div>
-			</div>:<SkeletonCard/>}
+			</div> : <SkeletonCard />}
 		</details>
+		</>
 	);
 }
 interface EditProp<T extends Commentable> {
