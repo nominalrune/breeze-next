@@ -1,40 +1,36 @@
 import type { UserDTO } from './User';
 import type { CommentDTO } from './Comment';
-export interface Subtask{
-	state:string|number,
-	title:string,
-	subtasks?:Subtask[],
+export interface Subtask {
+	state: string | number,
+	title: string,
+	subtasks?: Readonly<Subtask[]>,
 }
 export interface TaskDTO {
 	kind?: "App\\Models\\Task";
-	id: number|string,
+	id: number | string,
 	title: string,
 	description?: string,
 	state: number,
-	owner_id?: number|string,
+	owner_id?: number | string,
 	owner?: UserDTO,
-	parent_task_id?: number|string,
+	parent_task_id?: number | string,
 	parent_task?: TaskDTO,
-	subtasks?:Subtask[],
+	subtasks?: Subtask[],
 	due?: string,
 	created_at: string,
 	updated_at: string,
 	comments: CommentDTO<TaskDTO>[];
 }
 export interface TaskFormInput {
-	id?: number|string,
+	id?:  string,
 	title: string,
 	description?: string,
-	state: number,
-	owner_id?: number|string,
-	owner?: UserDTO,
-	parent_task_id?: number|string,
-	parent_task?: TaskDTO,
-	subtasks?:Subtask[],
+	owner_id?: string,
+	parent_task_id?: string,
+	subtasks?: Readonly<Subtask[]>,
 	due?: string,
 	created_at?: string,
 	updated_at?: string,
-	comments?: CommentDTO<TaskDTO>[];
 }
 
 // export class Task {

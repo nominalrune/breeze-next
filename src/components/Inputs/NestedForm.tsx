@@ -2,7 +2,7 @@ import DynamicList from './DynamicList';
 import * as React from 'react';
 import type {
 	F, DataModel, DataObj,NestedIterableAttr,NestedAttr, FormModel
-} from './commonTypes';
+} from './commonInputTypes';
 import TextInput from '@/components/Inputs/TextInput';
 import SelectInput from '@/components/Inputs/SelectInput';
 import InputLabel from '@/components/Inputs/InputLabel';
@@ -18,10 +18,10 @@ type Property<T extends Readonly<FormModel<N>>,N extends number> = {
 	// secondaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
 	// deleteAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
 	// cancelAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
-	primaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
-	secondaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
-	deleteAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
-	cancelAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T>>; };
+	primaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T,CountF<T>>>; };
+	secondaryAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T,CountF<T>>>; };
+	deleteAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T,CountF<T>>>; };
+	cancelAction?: { label: React.ReactNode, onClick: OnClick<DataModel<T,CountF<T>>>; };
 };
 export default function NestedForm<T extends Readonly<FormModel<N>>,N  extends number>({ properties, primaryAction, secondaryAction, deleteAction, cancelAction, level = 0 }: Property<T,N>) {
 	function initialize(properties: T) {

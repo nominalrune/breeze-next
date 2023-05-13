@@ -1,5 +1,5 @@
 import React,{ useState, useMemo} from 'react';
-import type { InputAttr,FormModel,DataModel,Primitive, WithId, DataObj,InputType,InputParam,F, Readable,SelectParam,  TextareaParam, CheckboxParam } from './commonTypes';
+import type { InputAttr,FormModel,DataModel,Primitive, WithId, DataObj,InputType,InputParam,F, Readable,SelectParam,  TextareaParam, CheckboxParam } from './commonInputTypes';
 import TextInput from '@/components/Inputs/TextInput';
 import SelectInput from '@/components/Inputs/SelectInput';
 import { FiX,FiPlus } from 'react-icons/fi';

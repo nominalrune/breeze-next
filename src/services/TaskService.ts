@@ -1,21 +1,25 @@
 import { axios, abort, csrf } from '@/lib/axios';
 
-import type { TaskDTO } from '@/models/Task';
+import type { TaskDTO, TaskFormInput } from '@/models/Task';
+import type { AxiosInstance, AxiosResponse } from 'axios';
 
 
 export default class TaskService {
 
-	private abortController: AbortController;
-	constructor() {
-		this.abortController = new AbortController();
+	#axios: AxiosInstance;
+	#abort: ()=>void;
+	#csrf:()=>Promise<AxiosResponse>;
+	constructor(option:{axios: AxiosInstance,abort:()=>void, csrf:()=>Promise<AxiosResponse>} = { axios:axios,abort, csrf}) {
+		this.#axios = option.axios;
+		this.#abort=option.abort;
+		this.#csrf=option.csrf;
 	}
 	public abort(){
-		this.abortController.abort();
-		this.abortController = new AbortController();
+		this.#abort();
 	}
 
 	async list() {
-		return axios.get('/tasks').then(
+		return this.#axios.get('/tasks').then(
 			(res) => {
 				return res.data;
 			}, (res) => {
@@ -25,13 +29,11 @@ export default class TaskService {
 
 	/**
 	 *
-	 * @returns {Promise<TaskDTO>} task
 	 * @throws {AxiosError} error
 	 */
-	async create(task: Omit<TaskDTO, "id">) {
-		await csrf();
-		const controller = this.abortController;
-		return axios.post<TaskDTO>('/tasks', task, { signal: controller.signal }).then(
+	async create(task: TaskFormInput): Promise<TaskDTO> {
+		await this.#csrf();
+		return this.#axios.post<TaskDTO>('/tasks', task).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
@@ -39,9 +41,8 @@ export default class TaskService {
 			});
 	};
 	async update(task: Partial<TaskDTO>&{id:number}) {
-		await csrf();
-		const controller = this.abortController;
-		return axios.put<TaskDTO>('/tasks/'+task.id, task, { signal: controller.signal }).then(
+		await this.#csrf();
+		return this.#axios.put<TaskDTO>('/tasks/'+task.id, task).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
@@ -49,9 +50,8 @@ export default class TaskService {
 			});
 	};
 	async completeTask(task: Partial<TaskDTO>&{id:number}) {
-		await csrf();
-		const controller = this.abortController;
-		return axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}, { signal: controller.signal }).then(
+		await this.#csrf();
+		return this.#axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
@@ -59,9 +59,8 @@ export default class TaskService {
 			});
 	}
 	async completeSubtask(task: Partial<TaskDTO>&{id:number}, subTaskId:number) {
-		await csrf();
-		const controller = this.abortController;
-		return axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}, { signal: controller.signal }).then(
+		await this.#csrf();
+		return this.#axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
@@ -69,9 +68,8 @@ export default class TaskService {
 			});
 	}
 	async delete(id:number) {
-		await csrf();
-		const controller = this.abortController;
-		return axios.delete<TaskDTO>('/tasks/'+id,  { signal: controller.signal }).then(
+		await this.#csrf();
+		return this.#axios.delete<TaskDTO>('/tasks/'+id).then(
 			(res) => {
 				return true;
 			}, (res) => {

@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import EditForm from '@/components/Inputs/EditForm';
 import { useNavigate } from "react-router-dom";
-// import create from '@/models/Task/create';
-import { axios, csrf } from '@/lib/axios';
 import type { Property } from '@/components/Inputs/EditForm';
 // import type {AuthParam} from '@/models/User';
-import NestedForm, { NestedIterableAttr,NestedAttr,FormModel } from '@/components/Inputs/NestedForm';
+import NestedForm, { NestedIterableAttr, NestedAttr, FormModel } from '@/components/Inputs/NestedForm';
 import TaskService from '@/services/TaskService';
+import { toast } from 'react-hot-toast';
 
 
 export function Create() {
-	const taskService=new TaskService();
+	const taskService = new TaskService();
 	const navigate = useNavigate();
 	const [errors, setErrors] = useState<any>();
 	function handleSuccess(res: { data: { id: number; }, url: string; }) {
@@ -36,10 +35,15 @@ export function Create() {
 			label: 'description',
 			defaultValue: "",
 		}, {
-			type: 'number',
-			name: "status",
-			label: 'status',
-			defaultValue: 0
+			type: 'select',
+			name: "state",
+			label: 'state',
+			defaultValue: "0",
+			options: [
+				["todo", "0"],
+				["in progress", "1"],
+				["done", "2"]
+			],
 		},
 		{
 			type: "number",
@@ -59,8 +63,13 @@ export function Create() {
 			}, {
 				name: 'state',
 				label: 'state',
-				type: 'number',
-				defaultValue: 0,
+				type: 'select',
+				defaultValue: "0",
+				options: [
+					["todo", "0"],
+					["in progress", "1"],
+					["done", "2"]
+				],
 			}, {
 				name: "subtasks",
 				label: "subtasks",
@@ -75,7 +84,7 @@ export function Create() {
 					name: 'state',
 					label: 'state',
 					type: 'number',
-					defaultValue: 0,
+					defaultValue: "0",
 				}, {
 					name: "subtasks",
 					label: "subtasks",
@@ -88,33 +97,34 @@ export function Create() {
 					}, {
 						name: 'state',
 						label: 'state',
-						type: 'number',
-						defaultValue: 0,
+						type: 'select',
+						defaultValue: "0",
+						options: [
+							["todo", "0"],
+							["in progress", "1"],
+							["done", "2"],
+						],
 					}]
-				} satisfies NestedIterableAttr<2> ]
-			}satisfies NestedIterableAttr<3>,
+				} ]
+			},
 			]
 		}
-    ] as const;
-	const Form=NestedForm<typeof props, 6> ;
-return (
-	<div className="m-3 p-3">
-		{/* <EditForm
-		properties={props}
-		method="post"
-		route='/api/tasks'
-		submitLabel="submit"
-		handleSuccess={handleSuccess} /> */}
-		<Form
-			properties={props}
-			primaryAction={{
-				label: "submit",
-				onClick: (data) => {
-					taskService.create(data).then(task=>navigate("/tasks/" + task.id));
-				}
-			}}
-			//api.post('/api/tasks',data).then(res=>console.log(res.data));}}}
-			cancelAction={{ label: "cancel", onClick: () => { } }}
-		/>
-	</div>);
+	] as const;
+	const Form = NestedForm<typeof props, 6>;
+	return (
+		<div className="m-3 p-3">
+			<Form
+				properties={props}
+				primaryAction={{
+					label: "submit",
+					onClick: (data) => {
+						taskService.create(data).then(task => {
+							navigate("/tasks/" + task.id);
+							toast.success("task created");
+						});
+					}
+				}}
+				cancelAction={{ label: "cancel", onClick: () => { } }}
+			/>
+		</div>);
 }
