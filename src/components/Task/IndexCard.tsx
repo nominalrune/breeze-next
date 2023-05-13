@@ -31,7 +31,7 @@ export function IndexCard({ task, user }: Param) {
 			</div>
 		</div>
 		<div className='grid grid-flow-col'>
-		{task.parentTask&&<div>{task.parentTask.parentTask&&(<>{task.parentTask.parentTask.title}<FiChevronRight/></>)}{task.parentTask.title}</div>}
+		{task.parent_task&&<div>{task.parent_task.title}<FiChevronRight/></div>}
 		</div>
 		<Comments className='' commentable={task} loginUser={user} update={() => { }} />
 	</div>);
