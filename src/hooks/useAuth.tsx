@@ -8,13 +8,14 @@ export const useAuth = () => {
 	const [user, setUser] = useState<UserDTO>();
 	useEffect(() => {
 		prelogin();
-	// 	// return () => {
-	// 	// 	abort();
-	// 	// };
-	},[]);
+		// 	// return () => {
+		// 	// 	abort();
+		// 	// };
+	}, []);
 	const navigate = useNavigate();
 	function abort() {
 		_abort();
+		setUser(undefined);
 	}
 
 	interface RegisterInputs {
@@ -29,26 +30,30 @@ export const useAuth = () => {
 		remember: boolean;
 	}
 	async function prelogin() {
-		const res = await axios.get('/login');
-		if (res.status >= 400) {
-			setUser(()=>undefined);
-			return false;
-		} else if (res.status < 300) {
-			setUser(()=>res.data);
-		return !!res.data;
+		try {
+			const res = await axios.get('/login');
+			if (res.status >= 300) {
+				setUser(() => undefined);
+				return false;
+			} else{
+				setUser(() => res.data);
+				return !!res.data;
+			}
 		}
+		catch {
+			setUser(() => undefined);
+		}
+
+
 	}
 	async function login(inputs: LoginInputs, navigateIfAuthenticated: string = "/") {
-		const {email, password, remember} = inputs;
-		// if (user && user.email !== inputs.email) {
-		// 	await logout();
-		// }
+		const { email, password, remember } = inputs;
 		if (await prelogin()) {
 			navigate(navigateIfAuthenticated);
 		}
-		const res = await axios.post("/login", { email, password , remember});
+		const res = await axios.post("/login", { email, password, remember });
 		if (res.status === 200) {
-			setUser(()=>res.data);
+			setUser(() => res.data);
 			navigate(navigateIfAuthenticated);
 		}
 	};
@@ -96,10 +101,8 @@ export const useAuth = () => {
 	};
 
 	const logout = async () => {
-		if (user) {
-			await axios.post('/logout');
-			setUser(undefined);
-		}
+		setUser(undefined);
+		await axios.post('/logout');
 		navigate('/login');
 	};
 

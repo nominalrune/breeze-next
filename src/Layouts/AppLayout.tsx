@@ -24,36 +24,5 @@ const AppLayout = () => {
 		</main>
 	</div>;
 };
-function WaitAndThenShowLogin({ auth }: { auth:Auth }) {
-	const [showLogin, setShowLogin] = useState(false);
-	useEffect(() => {
-		if (auth.user) { return; }
-		console.log('useEffect: WaitAndThenShowLogin')
-		const token = setTimeout(() => {
-			if (auth.user) { return; }
-			auth.prelogin().then(
-				(result) => {
-					if (result === true) {
-						console.log("prelogin success")
-						return;
-					} else {
-						console.log("prelogin fail")
 
-						setShowLogin(true);
-					}
-				},
-				result => {
-					console.log("prelogin fail", result)
-						setShowLogin(true);
-				}
-			);
-		}, 0);
-		return () => clearTimeout(token);
-	}, []);
-	return (
-		<div className="fixed w-full h-full grid items-center justify-center">
-			{showLogin?<LoginForm/>:<Spinner color='white' />}
-		</div>
-	);
-}
 export default AppLayout;

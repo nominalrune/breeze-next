@@ -4,7 +4,17 @@ import type { TaskDTO } from '@/models/Task';
 
 
 export default class TaskService {
-	static async list() {
+
+	private abortController: AbortController;
+	constructor() {
+		this.abortController = new AbortController();
+	}
+	public abort(){
+		this.abortController.abort();
+		this.abortController = new AbortController();
+	}
+
+	async list() {
 		return axios.get('/tasks').then(
 			(res) => {
 				return res.data;
@@ -15,31 +25,53 @@ export default class TaskService {
 
 	/**
 	 *
-	 * @param task
 	 * @returns {Promise<TaskDTO>} task
 	 * @throws {AxiosError} error
 	 */
-	static async create(task: Omit<TaskDTO, "id">) {
+	async create(task: Omit<TaskDTO, "id">) {
 		await csrf();
-		return axios.post<TaskDTO>('/tasks', task).then(
+		const controller = this.abortController;
+		return axios.post<TaskDTO>('/tasks', task, { signal: controller.signal }).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
 				throw res;
 			});
 	};
-	static async update(task: Partial<TaskDTO>&{id:number}) {
+	async update(task: Partial<TaskDTO>&{id:number}) {
 		await csrf();
-		return axios.put<TaskDTO>('/tasks/'+task.id, task).then(
+		const controller = this.abortController;
+		return axios.put<TaskDTO>('/tasks/'+task.id, task, { signal: controller.signal }).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
 				throw res;
 			});
 	};
-	static async delete(id:number) {
+	async completeTask(task: Partial<TaskDTO>&{id:number}) {
 		await csrf();
-		return axios.delete<TaskDTO>('/tasks/'+id, ).then(
+		const controller = this.abortController;
+		return axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}, { signal: controller.signal }).then(
+			(res) => {
+				return res.data;
+			}, (res) => {
+				throw res;
+			});
+	}
+	async completeSubtask(task: Partial<TaskDTO>&{id:number}, subTaskId:number) {
+		await csrf();
+		const controller = this.abortController;
+		return axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}, { signal: controller.signal }).then(
+			(res) => {
+				return res.data;
+			}, (res) => {
+				throw res;
+			});
+	}
+	async delete(id:number) {
+		await csrf();
+		const controller = this.abortController;
+		return axios.delete<TaskDTO>('/tasks/'+id,  { signal: controller.signal }).then(
 			(res) => {
 				return true;
 			}, (res) => {

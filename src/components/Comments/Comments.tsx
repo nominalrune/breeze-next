@@ -16,17 +16,43 @@ type CommentsParams<T extends Commentable> = {
 	update: () => void,
 	open?: boolean;
 };
+type CommentBodyParams<T extends Commentable> = {
+	className?:string,
+	commentable: T,
+	loginUser: UserDTO | undefined,
+	update: () => void,
+	open?: boolean;
+};
+type CommentButtonParams<T extends Commentable> = {
+	className?:string,
+	commentable: T,
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>
+};
+
 
 export function Comments<T extends Commentable>({ className='',commentable, loginUser, update, open:_open = false }: CommentsParams<T>) {
 	const [open, setOpen] = useState(_open);
-	const [editing, setEditing] = useState<number>();
-	const { comments = [] } = commentable;
 	if (!commentable) return (<div className="m-3"><SkeletonLine /></div>);
 	return (<>
-	<div onClick={()=>setOpen((open)=>!open)} className={className+" p-2 inline-flex items-center gap-1 text-slate-500 group-open:text-slate-300 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer"}>
+		<CommentButton className={className} commentable={commentable} setOpen={setOpen} />
+		<CommentBody className={className} commentable={commentable} loginUser={loginUser} update={update} open={open} />
+		</>
+	);
+}
+export function CommentButton<T extends Commentable>({ className='',commentable,setOpen }: CommentButtonParams<T>) {
+	const { comments = [] } = commentable;
+	return (<>
+	<div onClick={()=>setOpen((open:boolean)=>!open)} className={className+" p-2 inline-flex items-center gap-1 text-slate-500 group-open:text-slate-300 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer"}>
 					<FaRegCommentDots className="inline" />{comments.length}
 				</div>
-		<details open={open} className="group mx-3 p-3"><summary className='hidden'></summary>
+		</>
+	);
+}
+export function CommentBody<T extends Commentable>({ className='',commentable, loginUser, update, open }: CommentBodyParams<T>) {
+	const [editing, setEditing] = useState<number>();
+	const { comments = [] } = commentable;
+	return (<>
+		<details open={open} className={"group "+className} ><summary className='hidden'></summary>
 			{
 				comments.map((comment) => {
 					const date = new Date(comment.updated_at);

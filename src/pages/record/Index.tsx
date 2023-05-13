@@ -10,11 +10,11 @@ import MonthSelector from '@/components/MonthSelector';
 import { Table } from '@/components/Table';
 import { Comments } from '@/components/Comments/Comments';
 import { Comment } from '@/models/Comment';
-import {useAuth} from '@/hooks/useAuth';
+import {useAuthContext} from '@/hooks/useAuth';
 import SkeletonCard from '@/components/Skeletons/SkeletonCard';
 
 export function Index() {
-	const {user}=useAuth();
+	const {user}=useAuthContext();
 	const [records, setRecords] = useState<RecordDTO[]|undefined>();
 	const { month, setNextMonth, setPrevMonth } = useMonth(new Date());
 	function update() {

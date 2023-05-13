@@ -10,6 +10,7 @@ import TaskService from '@/services/TaskService';
 
 
 export function Create() {
+	const taskService=new TaskService();
 	const navigate = useNavigate();
 	const [errors, setErrors] = useState<any>();
 	function handleSuccess(res: { data: { id: number; }, url: string; }) {
@@ -109,7 +110,7 @@ return (
 			primaryAction={{
 				label: "submit",
 				onClick: (data) => {
-					TaskService.create(data).then(task=>navigate("/tasks/" + task.id));
+					taskService.create(data).then(task=>navigate("/tasks/" + task.id));
 				}
 			}}
 			//api.post('/api/tasks',data).then(res=>console.log(res.data));}}}

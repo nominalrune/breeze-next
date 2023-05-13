@@ -1,6 +1,6 @@
 import {axios} from '@/lib/axios';
 import type { Record, RecordDTO } from './Record';
-import type { Task, TaskDTO } from './Task';
+import type { TaskDTO } from './Task';
 import type { User, UserDTO } from './User';
 
 

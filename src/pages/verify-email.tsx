@@ -4,9 +4,9 @@ import Button from '@/components/Buttons/PrimaryButton'
 import { Link } from "react-router-dom";
 // import { AuthService, AuthContext } from '@/services/AuthService';
 import { useState,useContext } from 'react'
-import { useAuth,Auth} from '@/hooks/useAuth';
+import { useAuthContext,Auth} from '@/hooks/useAuth';
 const VerifyEmail = () => {
-    const { logout, resendEmailVerification } = useAuth()
+    const { logout, resendEmailVerification } = useAuthContext()
 
     const [status, setStatus] = useState(null)
 

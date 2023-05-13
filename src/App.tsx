@@ -29,24 +29,24 @@ export default function App() {
 			<Routes>
 				<Route path="/" element={<AppLayout />}>
 					<Route index element={<Home />} />
-					<Route path="dashboard" element={<Dashboard />} />
+					<Route path="dashboard" element={<ForceLogin><Dashboard /></ForceLogin>} />
 					{/* <Route path="/tasks"  element={<Tasks />} />
                 <Route path="/tasks/create" element={<TaskCreate />} />
                  */}
 					<Route path="tasks">
-						<Route index element={<Tasks />} />
-						<Route path="create" element={<TaskCreate />} />
-						<Route path=":taskId" element={<TaskShow />} />
+						<Route index element={<ForceLogin><Tasks /></ForceLogin>} />
+						<Route path="create" element={<ForceLogin><TaskCreate /></ForceLogin>} />
+						<Route path=":taskId" element={<ForceLogin><TaskShow /></ForceLogin>} />
 					</Route>
 					<Route path="calendar">
-						<Route index element={<Calendar />} />
-						<Route path="create" element={<CalendarCreate />} />
-						<Route path=":calendarId" element={<CalendarShow />} />
+						<Route index element={<ForceLogin><Calendar /></ForceLogin>} />
+						<Route path="create" element={<ForceLogin><CalendarCreate /></ForceLogin>} />
+						<Route path=":calendarId" element={<ForceLogin><CalendarShow /></ForceLogin>} />
 					</Route>
 					<Route path="records">
-						<Route index element={<Record />} />
-						<Route path="create" element={<RecordCreate />} />
-						<Route path=":recordId" element={<RecordShow />} />
+						<Route index element={<ForceLogin><Record /></ForceLogin>} />
+						<Route path="create" element={<ForceLogin><RecordCreate /></ForceLogin>} />
+						<Route path=":recordId" element={<ForceLogin><RecordShow /></ForceLogin>} />
 					</Route>
 					{/* </Route> */}
 					{/* <Route path="dashboard" element={<ForceLogin><Dashboard /></ForceLogin>} />

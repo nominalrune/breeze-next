@@ -7,14 +7,14 @@ import Input from '@/components/Input'
 import InputError from '@/components/InputError'
 import Label from '@/components/Label'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuth'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 const PasswordReset = () => {
     const router = useRouter()
 
-    const { resetPassword } = useAuth({ middleware: 'guest' })
+    const { resetPassword } = useAuthContext({ middleware: 'guest' })
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
