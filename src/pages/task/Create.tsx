@@ -105,8 +105,8 @@ export function Create() {
 							["done", "2"],
 						],
 					}]
-				} ]
-			},
+				} satisfies NestedIterableAttr<2>]
+			} satisfies NestedIterableAttr<3>,
 			]
 		}
 	] as const;
