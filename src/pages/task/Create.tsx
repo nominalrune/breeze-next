@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EditForm from '@/components/Inputs/EditForm';
 import { useNavigate } from "react-router-dom";
 import type { Property } from '@/components/Inputs/EditForm';
@@ -12,11 +12,7 @@ export function Create() {
 	const taskService = new TaskService();
 	const navigate = useNavigate();
 	const [errors, setErrors] = useState<any>();
-	function handleSuccess(res: { data: { id: number; }, url: string; }) {
-		const id = res.data.id;
-		navigate("/tasks/" + id);
-	}
-	const props = [
+	const [props, setProps] = useState<FormModel<6>>( [
 		{
 			name: 'title',
 			label: 'title',
@@ -34,7 +30,8 @@ export function Create() {
 			name: 'description',
 			label: 'description',
 			defaultValue: "",
-		}, {
+		},
+		{
 			type: 'select',
 			name: "state",
 			label: 'state',
@@ -46,10 +43,10 @@ export function Create() {
 			],
 		},
 		{
-			type: "number",
+			type: "select",
 			name: "parent_task_id",
 			label: 'parent_task_id',
-			defaultValue: ""
+			options: [],
 		},
 		{
 			type: "nested-iterable",
@@ -89,6 +86,7 @@ export function Create() {
 					name: "subtasks",
 					label: "subtasks",
 					type: "nested-iterable",
+					defaultValue: [],
 					model: [{
 						name: 'title',
 						label: 'title',
@@ -105,11 +103,28 @@ export function Create() {
 							["done", "2"],
 						],
 					}]
-				} satisfies NestedIterableAttr<2>]
-			} satisfies NestedIterableAttr<3>,
+				} //satisfies NestedIterableAttr<2>
+			]
+			} //satisfies NestedIterableAttr<3>,
 			]
 		}
-	] as const;
+	]);
+	useEffect(() => {
+		taskService.list({fields:["id","title"]}).then(data => {
+			setProps((props)=>{
+			const _props = [...props];
+			if("options" in _props[4]){
+			_props[4].options = data.map((task) => [task.title, task.id.toString()]);
+			}
+			return _props as unknown as FormModel<6>;
+		});
+		});
+	},[]);
+	function handleSuccess(res: { data: { id: number; }, url: string; }) {
+		const id = res.data.id;
+		navigate("/tasks/" + id);
+		toast.success("task created");
+	}
 	const Form = NestedForm<typeof props, 6>;
 	return (
 		<div className="m-3 p-3">

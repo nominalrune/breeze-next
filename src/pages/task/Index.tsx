@@ -9,22 +9,35 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '@/hooks/useAuth';
 export function Index() {
-	const taskService = new TaskService();
-	const {user}=useAuthContext();
+	const { user } = useAuthContext();
 	const [tasks, setTasks] = useState<TaskDTO[]>([]);
+	async function updateTask(task: TaskDTO) {
+		const taskService = new TaskService();
+		await taskService.update(task);
+		setTasks(tasks.map(item => item.id === task.id ? task : item));
+		return;
+	}
 	useEffect(() => {
+		const taskService = new TaskService();
 		taskService.list().then(data => {
-			console.log({ data });
 			setTasks(data);
 		});
-		return ()=>{taskService.abort();}
+		return () => taskService.abort();
 	}, []);
 	return (
-		<div>
-			<h1 className='p-3 text-3xl '>
+		<div className='p-3'>
+			<h1 className='text-3xl '>
 				Tasks
 			</h1>
-					<IndexList tasks={tasks} user={user} />
+			<h2 className='text-xl'>Ongoing:</h2>
+			<IndexList tasks={tasks.filter(item => item.state === 1)} user={user} update={updateTask} />
+			<h2 className='text-xl'>Todo:</h2>
+			<IndexList tasks={tasks.filter(item => item.state === 0)} user={user} update={updateTask} />
+			<h2 className='text-xl'>Done:</h2>
+			<IndexList tasks={tasks.filter(item => item.state === 3)} user={user} update={updateTask} />
+			<h2 className='text-xl'>Pending:</h2>
+			<IndexList tasks={tasks.filter(item => item.state === 2)} user={user} update={updateTask} />
+
 			<Link to={'/tasks/create'}><FloatingActionButton icon="+" /></Link>
 		</div>
 	);

@@ -14,8 +14,8 @@ export const useAuth = () => {
 	}, []);
 	const navigate = useNavigate();
 	function abort() {
-		_abort();
-		setUser(undefined);
+		// _abort();
+		// setUser(undefined);
 	}
 
 	interface RegisterInputs {
@@ -51,6 +51,7 @@ export const useAuth = () => {
 		if (await prelogin()) {
 			navigate(navigateIfAuthenticated);
 		}
+		await csrf();
 		const res = await axios.post("/login", { email, password, remember });
 		if (res.status === 200) {
 			setUser(() => res.data);

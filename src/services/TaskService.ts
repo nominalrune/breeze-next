@@ -2,7 +2,15 @@ import { axios, abort, csrf } from '@/lib/axios';
 
 import type { TaskDTO, TaskFormInput } from '@/models/Task';
 import type { AxiosInstance, AxiosResponse } from 'axios';
+import PhpURL from '@/services/PhpURL';
 
+type ListParam=Partial<{
+	page:string;
+	pageSize:string;
+	state:string;
+	keyword:string;
+	fields:(keyof TaskDTO)[];
+}>
 
 export default class TaskService {
 
@@ -18,8 +26,9 @@ export default class TaskService {
 		this.#abort();
 	}
 
-	async list() {
-		return this.#axios.get('/tasks').then(
+	async list(param?:ListParam) {
+		const url = new PhpURL('/tasks',param).toString();
+		return this.#axios.get(url).then(
 			(res) => {
 				return res.data;
 			}, (res) => {
@@ -40,7 +49,7 @@ export default class TaskService {
 				throw res;
 			});
 	};
-	async update(task: Partial<TaskDTO>&{id:number}) {
+	async update(task: Partial<TaskDTO>&{id:number|string}) {
 		await this.#csrf();
 		return this.#axios.put<TaskDTO>('/tasks/'+task.id, task).then(
 			(res) => {
@@ -49,7 +58,7 @@ export default class TaskService {
 				throw res;
 			});
 	};
-	async completeTask(task: Partial<TaskDTO>&{id:number}) {
+	async completeTask(task: Partial<TaskDTO>&{id:number|string}) {
 		await this.#csrf();
 		return this.#axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}).then(
 			(res) => {
@@ -58,7 +67,7 @@ export default class TaskService {
 				throw res;
 			});
 	}
-	async completeSubtask(task: Partial<TaskDTO>&{id:number}, subTaskId:number) {
+	async completeSubtask(task: Partial<TaskDTO>&{id:number|string}, subTaskId:number) {
 		await this.#csrf();
 		return this.#axios.put<TaskDTO>('/tasks/'+task.id,{...task, state:3}).then(
 			(res) => {

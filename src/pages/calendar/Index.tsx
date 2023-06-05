@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { axios } from '@/lib/axios';
-import type { AuthParam } from '@/models/User';
+// import type { AuthParam } from '@/models/User';
 import type { RecordDTO } from '@/models/Record';
 import type { TaskDTO } from '@/models/Task';
 import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton';
@@ -12,12 +12,13 @@ import type { CalendarEntry } from '@/models/CalendarEntry';
 import CalendarEditForm from '@/components/Calendar/CalendarEditForm';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import type { EventInput, EventClickArg, Eventaxios, CalendarApi } from '@fullcalendar/core';
+import type { EventInput, EventClickArg,  CalendarApi } from '@fullcalendar/core';
 import MonthSelector from '@/components/MonthSelector';
 import { useMonth } from '@/hooks/useMonth';
 
 import jaLocale from '@fullcalendar/core/locales/ja';
 import { Modal, ModalProps } from '@/components/Modals/Modal';
+import { User } from '@/models/User';
 
 interface EventClickInfo<T> extends EventClickArg {
     el: HTMLElement,
@@ -28,7 +29,7 @@ interface EventClickInfo<T> extends EventClickArg {
     view: any,
 }
 
-export function Index({ user }: AuthParam) {
+export function Index({ user }: {user:User}) {
     const [events, setEvents] = useState<CalendarEntry[]>([]);
     const params = Object.fromEntries([...new URL(location.href).searchParams.entries()]);
     const {month, setNextMonth, setPrevMonth} = useMonth(params.start ? new Date(params.start) : new Date());

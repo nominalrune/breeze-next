@@ -19,7 +19,7 @@ interface DynamicListProps<T extends FormModel<N>, N extends number> {
 
 export default function DynamicList<T extends FormModel<N>, N extends number>({ formModel, data, setData }: DynamicListProps<T, N>) {
 	const [index, setIndex] = useState(0);
-	const list = useMemo(()=>data.map(item=>withId(item)),[data]);
+	const list = useMemo(()=>data?.map(item=>withId(item)),[data]);
 
 	function withId(initialValue: DataModel<T,N>):WithId<DataModel<T,N>>{
 		const id = ('id' in initialValue) ? initialValue.id as number|string: index; // NOTE initialValue.id be prioritized over index, overwriting the original id may cause errors

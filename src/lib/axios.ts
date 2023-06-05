@@ -1,4 +1,5 @@
 import Axios from 'axios';
+
 import type { AxiosRequestConfig } from 'axios';
 
 const controller = new AbortController();
@@ -9,7 +10,7 @@ export const axios = Axios.create({
 	signal,
 });
 export function abort() {
-	controller.abort();
+	// controller.abort();
 }
 
 export async function csrf() {
