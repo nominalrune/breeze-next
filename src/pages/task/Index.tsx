@@ -8,14 +8,15 @@ import TaskService from '@/services/TaskService';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
 export function Index() {
 	const { user } = useAuthContext();
 	const [tasks, setTasks] = useState<TaskDTO[]>([]);
 	async function updateTask(task: TaskDTO) {
 		const taskService = new TaskService();
-		await taskService.update(task);
+		await taskService.update(task).then(() => toast.success('Task updated'));
 		setTasks(tasks.map(item => item.id === task.id ? task : item));
-		return;
+		return task;
 	}
 	useEffect(() => {
 		const taskService = new TaskService();

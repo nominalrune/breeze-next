@@ -53,14 +53,13 @@ export default function DynamicList<T extends FormModel<N>, N extends number>({ 
 								(() => {
 									const attr = { field, item, handleChange } as any; // FIXME
 									switch (field.type) {
-										case 'hidden': <></>
+										case 'hidden': return <></>;
 										case 'select': return <SelectInput
 											type='select'
 											name={field.name}
 											options={field.options as [string, string][]}
 											value={item[field.name]}
 											onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(item.id, field.name, e.target.value)}
-
 										/>;
 										case 'checkbox': return <Checkbox {...attr} />;
 										case 'textarea': return <Textarea {...attr} />;

@@ -74,7 +74,7 @@ export default function NestedForm<T extends Readonly<FormModel<N>>,N  extends n
 		<form onSubmit={(e) => { e.preventDefault(); primaryAction?.onClick(data); }} className={`flex ${level === 0 ? "flex-col gap-4" : "flex-row"}`} >
 			{properties.map((prop, i) =>
 				prop.type === 'hidden' ? (
-					<></> // no need to show data because the value is already set
+					<React.Fragment key={prop.name}></React.Fragment> // no need to show data because the value is already set
 				) : (
 					<div key={'input_' + prop.name} className={`mt-4 flex flex-col relative`}>
 						<InputLabel forInput={prop.name} label={prop.label ?? ''} />
@@ -94,7 +94,8 @@ export default function NestedForm<T extends Readonly<FormModel<N>>,N  extends n
 								);
 							} else if (prop.type === 'nested-iterable' && prop.name in data) {
 								return (
-									<div className="m-2 ml-4"><DynamicList
+									<div className="m-2 ml-4">
+										<DynamicList
 										formModel={prop.model}
 										data={data[prop.name]}
 										setData={(_value) => {

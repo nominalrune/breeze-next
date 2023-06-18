@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { axios } from '@/lib/axios';
-import type { TaskDTO, Task } from '@/models/Task';
-import type { AuthParam } from '@/models/User';
+import type { TaskDTO, Subtask } from '@/models/Task';
+import type { User } from '@/models/User';
 import TextInput from '@/components/Inputs/TextInput';
 import Button from '@/components/Buttons/Button';
 
@@ -11,6 +11,144 @@ import SkeletonLines from '@/components/Skeletons/SkeletonLines';
 import { FiEdit } from 'react-icons/fi';
 import Spinner from '@/components/Skeletons/Spinner';
 import { TaskTree } from '@/components/Task/Tree';
+
+export function Show({ user }: {user:User}) {
+	const [task, setTask] = useState<TaskDTO | undefined>();
+	const [isEditing, setIsEditing] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { taskId } = useParams();
+
+	useEffect(() => {
+		axios.get('/tasks/' + taskId).then((res) => {
+			setTask(res.data);
+		});
+	}, [taskId]);
+
+	function handleEdit() {
+		setIsEditing(true);
+	}
+	function handleCancel() {
+		setIsEditing(false);
+	}
+	async function handleSubmit(newTask: TaskDTO) {
+		setIsSubmitting(true);
+		try {
+			await axios.put('/tasks/' + taskId, newTask);
+			setTask(newTask);
+			setIsEditing(false);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
+	if(!task){
+		return <Spinner />;
+	}else if(isEditing){
+		return <TaskEdit task={task} onCancel={handleCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting} />;
+	}else{
+		return <TaskView task={task} onEdit={handleEdit} onSubmit={handleSubmit} />;
+	}
+}
+
+
+type TaskViewProps = {
+	task: TaskDTO;
+	onEdit: () => void;
+	onSubmit: (task: TaskDTO) => void;
+};
+function TaskView({ task, onEdit,onSubmit }: TaskViewProps) {
+	function handleSubtaskUpdate(subtasks: Subtask[]) {
+		const newTask={...task, subtasks};
+		onSubmit(newTask);
+	}
+	return (
+		<ViewFrame
+			title={<>
+				<div className="m-3 text-3xl">{task ? task.title : <SkeletonLine subject={true} />}</div>
+				<div className='m-1 text-xs text-right '>
+					<div className="">作成: {task ? new Date(task.created_at).toLocaleString('ja-JP') : <SkeletonLine />}</div>
+					<div className="">更新: {task ? new Date(task.updated_at).toLocaleString('ja-JP') : <SkeletonLine />}</div>
+				</div>
+			</>}
+			description={<div className="m-6 text-slate-800">{ task.description ||<div className='text-slate-600'>(no description)</div>}</div>}
+			subtaskArea={<div className="m-3 text-slate-800">{task.subtasks? <TaskTree tasks={task.subtasks} update={handleSubtaskUpdate} /> : <SkeletonLines subject={false} lines={4} />}</div>}
+			footer={task && <div
+				className="m-1 p-2 rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+				onClick={onEdit}
+			>
+				<FiEdit />
+			</div>}
+		/>
+	);
+}
+
+type TaskEditProps = {
+	task: TaskDTO;
+	onCancel: () => void;
+	onSubmit: (task: TaskDTO) => Promise<void>;
+	isSubmitting: boolean;
+};
+
+function TaskEdit({ task, onCancel, onSubmit, isSubmitting }: TaskEditProps) {
+	const [taskUnderEdit, setTaskUnderEdit] = useState<TaskDTO>(task);
+	function handleChange<T extends keyof TaskDTO>(key: T, value: TaskDTO[T]) {
+		setTaskUnderEdit((taskUnderEdit) => ({ ...taskUnderEdit, [key]: value }));
+	}
+	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		onSubmit(taskUnderEdit);
+	}
+	function handleSubtaskUpdate(subtasks: Subtask[]) {
+		const newTask={...task, subtasks};
+		setTaskUnderEdit(newTask);
+	}
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<ViewFrame
+				title={<>
+					<div className="m-3 text-3xl">
+						<TextInput
+							type="text"
+							name='title'
+							value={taskUnderEdit.title}
+							onChange={(e) => handleChange('title', e.target.value)}
+						/>
+					</div>
+					<div className='m-1 text-xs text-right '>
+						<div className="">作成: {new Date(task.created_at).toLocaleString('ja-JP')}</div>
+						<div className="">更新: {new Date(task.updated_at).toLocaleString('ja-JP')}</div>
+					</div>
+				</>}
+				description={
+					<div className="m-3 text-slate-800">
+						<TextInput
+							type="textarea"
+							name='description'
+							value={taskUnderEdit.description ?? ""}
+							onChange={(e) => handleChange('description', e.target.value)}
+						/>
+					</div>
+				}
+				subtaskArea={<div className="m-3 text-slate-800">
+					{
+					task&&task.subtasks
+					? <TaskTree tasks={taskUnderEdit.subtasks ?? []} update={handleSubtaskUpdate} isEditing={true} />
+					: <SkeletonLines subject={false} lines={4} />
+					}</div>}
+				footer={
+					<>
+						<Button type="submit" disabled={isSubmitting}>
+							{isSubmitting ? <Spinner size={'3'} color='slate' /> : 'Save'}
+						</Button>
+						<Button color='secondary' onClick={onCancel}>Cancel</Button>
+					</>
+				}
+			/>
+		</form>
+	);
+}
 
 type ViewFrameProps = {
 	title: React.ReactNode;
@@ -38,124 +176,4 @@ function ViewFrame({ title, description,subtaskArea, footer }: ViewFrameProps) {
 	);
 }
 
-type TaskViewProps = {
-	task: TaskDTO | undefined;
-	onEdit: () => void;
-};
-function TaskView({ task, onEdit }: TaskViewProps) {
-	return (
-		<ViewFrame
-			title={<>
-				<div className="m-3 text-3xl">{task ? task.title : <SkeletonLine subject={true} />}</div>
-				<div className='m-1 text-xs text-right '>
-					<div className="">作成: {task ? new Date(task.created_at).toLocaleString('ja-JP') : <SkeletonLine />}</div>
-					<div className="">更新: {task ? new Date(task.updated_at).toLocaleString('ja-JP') : <SkeletonLine />}</div>
-				</div>
-			</>}
-			description={<div className="m-3 text-slate-800">{task ? task.description : <SkeletonLines subject={false} lines={4} />}</div>}
-			subtaskArea={<div className="m-3 text-slate-800">{task&&task.subtasks? <TaskTree tasks={task.subtasks}/> : <SkeletonLines subject={false} lines={4} />}</div>}
-			footer={task && <div
-				className="m-1 p-2 rounded-md text-slate-600 hover:bg-slate-100 hover:text-slate-800"
-				onClick={onEdit}
-			>
-				<FiEdit />
-			</div>}
-		/>
-	);
-}
 
-type TaskEditProps = {
-	task: TaskDTO;
-	onCancel: () => void;
-	onSubmit: (task: TaskDTO) => Promise<void>;
-	isSubmitting: boolean;
-};
-
-function TaskEdit({ task, onCancel, onSubmit, isSubmitting }: TaskEditProps) {
-	const [taskUnderEdit, setTaskUnderEdit] = useState<TaskDTO>(task);
-	function handleChange<T extends keyof TaskDTO>(key: T, value: TaskDTO[T]) {
-		setTaskUnderEdit((taskUnderEdit) => ({ ...taskUnderEdit, [key]: value }));
-	}
-	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		onSubmit(taskUnderEdit);
-	}
-
-	return (
-		<form onSubmit={handleSubmit}>
-			<ViewFrame
-				title={<>
-					<div className="m-3 text-3xl">
-						<TextInput
-							name='title'
-							value={taskUnderEdit.title}
-							onChange={(e) => handleChange('title', e.target.value)}
-						/>
-					</div>
-					<div className='m-1 text-xs text-right '>
-						<div className="">作成: {new Date(task.created_at).toLocaleString('ja-JP')}</div>
-						<div className="">更新: {new Date(task.updated_at).toLocaleString('ja-JP')}</div>
-					</div>
-				</>}
-				description={
-					<div className="m-3 text-slate-800">
-						<TextInput
-							type="textarea"
-							name='description'
-							value={taskUnderEdit.description ?? ""}
-							onChange={(e) => handleChange('description', e.target.value)}
-						/>
-					</div>
-				}
-				subtaskArea={<div className="m-3 text-slate-800">{task&&task.subtasks? <TaskTree tasks={task.subtasks}/> : <SkeletonLines subject={false} lines={4} />}</div>}
-				footer={
-					<>
-						<Button type="submit" disabled={isSubmitting}>
-							{isSubmitting ? <Spinner size={'3'} color='slate' /> : 'Save'}
-						</Button>
-						<Button color='secondary' onClick={onCancel}>Cancel</Button>
-					</>
-				}
-			/>
-		</form>
-	);
-}
-
-
-
-export function Show({ user }: AuthParam) {
-	const [task, setTask] = useState<TaskDTO | undefined>();
-	const [isEditing, setIsEditing] = useState(false);
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const { taskId } = useParams();
-
-	useEffect(() => {
-		axios.get('/tasks/' + taskId).then((res) => {
-			setTask(res.data);
-		});
-	}, [taskId]);
-
-	function handleEdit() {
-		setIsEditing(true);
-	}
-	function handleCancel() {
-		setIsEditing(false);
-	}
-	async function handleSubmit(task: TaskDTO) {
-		setIsSubmitting(true);
-		try {
-			await axios.post('/tasks/' + taskId, task);
-			setTask(task);
-			setIsEditing(false);
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setIsSubmitting(false);
-		}
-	}
-	if(isEditing){
-		return <TaskEdit task={task!} onCancel={handleCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting} />;
-	}else{
-		return <TaskView task={task} onEdit={handleEdit} />;
-	}
-}

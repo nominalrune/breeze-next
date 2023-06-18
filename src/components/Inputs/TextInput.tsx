@@ -1,55 +1,88 @@
 import type { ChangeEvent } from 'react';
 export type InputType = "checkbox" | "color" | "date" | "datetime-local" | "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "reset" | "tel" | "text" | "time" | "url" | "week";
 
-type Param = {
-	name: string,
-	id?: string,
-	value: string | number,
-	className?: string,
-	required?: boolean,
-	outerClassName?:string,
+type Param<T extends InputType | "textarea"> = { type: T; underlineStyle?:boolean; } & (T extends "textarea" ? TextareaParam : InputParam<T>);
 
-	// autoComplete?:"name"|"honorific-prefix"|"given-name"|"additional-name"|"family-name"|"honorific-suffix"|"nickname"|"organization-title"|"username"|"new-password"|"current-password"|"one-time-code"|"organization"|"street-address"|"address-line1"|"address-line2"|"address-line3"|"address-level4"|"address-level3"|"address-level2"|"address-level1"|"country"|"country-name"|"postal-code"|"cc-name"|"cc-given-name"|"cc-additional-name"|"cc-family-name"|"cc-number"|"cc-exp"|"cc-exp-month"|"cc-exp-year"|"cc-csc"|"cc-type"|"transaction-currency"|"transaction-amount"|"language"|"bday"|"bday-day"|"bday-month"|"bday-year"|"sex"|"url"|"photo"|"tel"|"tel-country-code"|"tel-national"|"tel-area-code"|"tel-local"|"tel-local-prefix"|"tel-local-suffix"|"tel-extension"|"email"|"impp",
-} & ({
-	type: InputType;
-	onChange: (event: ChangeEvent<HTMLInputElement>) => any;
-} | {
-	type: "textarea";
-	onChange: (event: ChangeEvent<HTMLTextAreaElement>) => any;
+type TextareaParam = React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> & {
+	outerClassName?: string;
+	value: string;
+};
+type InputParam<T> = Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "value" | "type"> & {
+	outerClassName?: string;
+} & (T extends "checkbox" ? {
+	value: boolean;
+} : T extends "number" ? {
+	value: number;
+} : {
+	value: string;
 });
 
-export default function TextInput(
-	{ type = 'text', name, id, value, className, outerClassName, required = false, onChange, ...rest }: Param,
+export default function TextInput<T extends InputType | "textarea" = "text">(
+	{ type="text", name, id, value, className, outerClassName,underlineStyle, required = false, onChange, ...rest }: Param<T>,
 ) {
+	const classString = underlineStyle?"border-0 border-b-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 invalid:border-red-300 focus:invalid:border-red-300 focus:invalid:ring-red-300 backdrop-blur ": "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 invalid:border-red-300 focus:invalid:border-red-300 focus:invalid:ring-red-300 rounded-md shadow-sm ";
 	return (
-		<div className={"flex flex-col items-start justify-center "+outerClassName}>
+		<div className={"flex flex-col items-start justify-center" + outerClassName}>
 			{type === "textarea"
 				? <textarea
 					{...rest}
 					name={name}
-					value={value}
+					value={value as string}
 					className={
-						`border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full ` +
+						classString
+						+ `mt-1 block w-full ` +
 						className
 					}
-					onChange={onChange}
+					onChange={onChange as (event: ChangeEvent<HTMLTextAreaElement>) => any}
 					required={required}
 					style={{ fontSize: "inherit" }}
 				/>
-				: <input
-					{...rest}
-					type={type}
-					name={name}
-					id={id ?? name}
-					value={value}
-					className={
-						`border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ` +// mt-1
-						className + " " + (type === "checkbox" ? "w-5 h-5" : "")
-					}
-					style={{ fontSize: "inherit" }}
-					required={required}
-					onChange={onChange}
-				/>}
+				: type === "number"
+					? <input
+						{...rest}
+						type='number'
+						name={name}
+						id={id ?? name}
+						value={+value}
+						className={
+							classString
+							+ className
+						}
+						style={{ fontSize: "inherit" }}
+						required={required}
+						onChange={onChange as (event: ChangeEvent<HTMLInputElement>) => any}
+					/>
+					: type === "checkbox"
+						? <input
+							{...rest}
+							type="checkbox"
+							name={name}
+							id={id ?? name}
+							checked={!!value as boolean}
+							className={
+								classString +
+								className + " w-5 h-5"
+							}
+							style={{ fontSize: "inherit" }}
+							required={required}
+							onChange={onChange as (event: ChangeEvent<HTMLInputElement>) => any}
+						/>
+						:
+						<input
+							{...rest}
+							type={type}
+							name={name}
+							id={id ?? name}
+							value={value as string}
+							className={
+								classString +
+								className
+							}
+							style={{ fontSize: "inherit" }}
+							required={required}
+							onChange={onChange as (event: ChangeEvent<HTMLInputElement>) => any}
+						/>
+			}
 		</div>
 	);
 };
