@@ -19,7 +19,7 @@ import { Show as CalendarShow } from '@/pages/calendar/Show';
 import { Index as Record } from '@/pages/record/Index';
 import { Create as RecordCreate } from '@/pages/record/Create';
 import { Show as RecordShow } from '@/pages/record/Show';
-import { useAuth, Auth, AuthContext } from '@/hooks/useAuth';
+import { useAuth, AuthContext } from '@/hooks/useAuth';
 
 export default function App() {
 	const auth = useAuth();
@@ -39,7 +39,7 @@ export default function App() {
 						<Route path=":taskId" element={<ForceLogin><TaskShow /></ForceLogin>} />
 					</Route>
 					<Route path="calendar">
-						<Route index element={<ForceLogin><Calendar /></ForceLogin>} />
+						<Route index element={<ForceLogin><Calendar user={auth.user} /></ForceLogin>} />
 						<Route path="create" element={<ForceLogin><CalendarCreate /></ForceLogin>} />
 						<Route path=":calendarId" element={<ForceLogin><CalendarShow /></ForceLogin>} />
 					</Route>

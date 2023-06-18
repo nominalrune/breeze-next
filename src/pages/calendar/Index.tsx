@@ -18,7 +18,7 @@ import { useMonth } from '@/hooks/useMonth';
 
 import jaLocale from '@fullcalendar/core/locales/ja';
 import { Modal, ModalProps } from '@/components/Modals/Modal';
-import { User } from '@/models/User';
+import type { UserDTO } from '@/models/User';
 
 interface EventClickInfo<T> extends EventClickArg {
     el: HTMLElement,
@@ -29,14 +29,14 @@ interface EventClickInfo<T> extends EventClickArg {
     view: any,
 }
 
-export function Index({ user }: {user:User}) {
+export function Index({ user }: {user:UserDTO|undefined}) {
     const [events, setEvents] = useState<CalendarEntry[]>([]);
     const params = Object.fromEntries([...new URL(location.href).searchParams.entries()]);
     const {month, setNextMonth, setPrevMonth} = useMonth(params.start ? new Date(params.start) : new Date());
     const [calendarApi, setCalendarApi] = useState<CalendarApi>();
     useEffect(() => {
         const url = encodeURI(`/calendar?display_type=month&start=${month.getFullYear()}-${month.getMonth() + 1}`);
-        api.get<CalendarEntry[]>(url).then(({ data }) => {
+        axios.get<CalendarEntry[]>(url).then(({ data }) => {
             console.log("fetched:", data);
             setEvents(data);
         });
