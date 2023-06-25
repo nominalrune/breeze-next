@@ -17,6 +17,7 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [errors, setErrors] = useState<any>([])
+	const [passphrase, setPassphrase] = useState('')
 
     const submitForm = (event:React.FormEvent)  => {
         event.preventDefault()
@@ -26,6 +27,7 @@ const Register = () => {
             email,
             password,
             password_confirmation: passwordConfirmation,
+			passphrase
         },
         '/dashboard',)
     }
@@ -111,6 +113,23 @@ const Register = () => {
                         <InputError
                             messages={errors?.password_confirmation}
                             className="mt-2"
+                        />
+                    </div>
+                    {/* Confirm Password */}
+                    <div className="mt-4">
+                        <Label htmlFor="passwordConfirmation">
+                            Confirm Password
+                        </Label>
+
+                        <Input
+                            id="passphrase"
+                            type="password"
+                            value={passphrase}
+                            className="block mt-1 w-full"
+                            onChange={(event:ChangeEvent<HTMLInputElement>) =>
+                                setPassphrase(event.target.value)
+                            }
+                            required
                         />
                     </div>
 

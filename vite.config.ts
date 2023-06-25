@@ -8,6 +8,9 @@ export default defineConfig(({ command, mode }) => {
 	const env = loadEnv(mode, process.cwd(), '');
 	return {
 		root: "src",
+		build:{
+			outDir:"../../public",
+		},
 		// server: {
 		// 	https: {
 		// 		key: fs.readFileSync('./certs/localhost-key.pem'),

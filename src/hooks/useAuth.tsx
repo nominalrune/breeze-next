@@ -1,4 +1,4 @@
-import { axios, abort as _abort, csrf } from '@/lib/axios';
+import { api,axios, abort as _abort, csrf } from '@/lib/axios';
 import { useState, useContext, createContext, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import type { UserDTO } from '@/models/User';
@@ -31,7 +31,7 @@ export const useAuth = () => {
 	}
 	async function prelogin() {
 		try {
-			const res = await axios.get('/login');
+			const res = await api().get('/login');
 			if (res.status >= 300) {
 				setUser(() => undefined);
 				return false;
@@ -51,16 +51,17 @@ export const useAuth = () => {
 		if (await prelogin()) {
 			navigate(navigateIfAuthenticated);
 		}
-		await csrf();
-		const res = await axios.post("/login", { email, password, remember });
+		await api().csrf();
+		const res = await api().post("/login", { email, password, remember });
 		if (res.status === 200) {
 			setUser(() => res.data);
 			navigate(navigateIfAuthenticated);
 		}
 	};
 	const register = async (inputs: RegisterInputs, navigateIfAuthenticated: string = "/") => { //FIXME
-		await csrf();
-		axios
+		await api().csrf();
+		// FIXME axiosインスタンスをあたらしく作る必要があるのでは？
+		api()
 			.post('/register', inputs)
 			.then(res => {
 				setUser(res.data);
@@ -73,9 +74,9 @@ export const useAuth = () => {
 	};
 
 	const forgotPassword = async (email: string) => { //FIXME
-		await csrf();
+		// await csrf();
 
-		axios
+		api()
 			.post('/forgot-password', { email })
 			.catch(error => {
 				// if (error.response.status !== 422) throw new Error(error);
@@ -85,8 +86,8 @@ export const useAuth = () => {
 
 	const resetPassword = async (props: any) => { //FIXME
 		const { token } = useParams();
-		await csrf();
-		axios
+		// await csrf();
+		api()
 			.post('/reset-password', { token, ...props })
 			.then(response =>
 				navigate('/login?reset=' + btoa(response.data.status)),
@@ -97,13 +98,13 @@ export const useAuth = () => {
 	};
 
 	const resendEmailVerification = () => {
-		axios
+		api()
 			.post('/email/verification-notification', null);
 	};
 
 	const logout = async () => {
 		setUser(undefined);
-		await axios.post('/logout');
+		await api().post('/logout');
 		navigate('/login');
 	};
 
