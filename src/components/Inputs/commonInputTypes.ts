@@ -10,69 +10,42 @@ export interface InputAttr<T> {
 }
 export type Primitive = string | number | boolean;
 
-export type F = Readonly<InputAttr<InputType> | SelectAttr | CheckboxAttr | TextareaAttr | NestedAttr | NestedIterableAttr>;
+export type F = Readonly<InputAttr<InputType> | SelectAttr | CheckboxAttr | TextareaAttr | NestedAttr<F[]> | NestedIterableAttr<F[]>>;
 
-export type Readable<T> = T | Readonly<T>;
-export type FormModel<N> = N extends 1 ? Readonly<[F]> : N extends 2 ? Readonly<[F, F]> : N extends 3 ? Readonly<[F, F, F]> : N extends 4 ? Readonly<[F, F, F, F]> : N extends 5 ? Readonly<[F, F, F, F, F]> : N extends 6 ? Readonly<[F, F, F, F, F, F]> : N extends 7 ? Readonly<[F, F, F, F, F, F, F]> : N extends 8 ? Readonly<[F, F, F, F, F, F, F, F]> : N extends 9 ? Readonly<[F, F, F, F, F, F, F, F, F]> : unknown;
-// export type FormModel<N extends number=1|2|3|4|5|6|7|8|9> = Tuple<F,N>;
-// type D<T extends Readonly<{"name":string,'type':'a'}[]>> =DataObj<T[number]>
+//export type Readable<T> = T | Readonly<T>;
+//export type FormModel<N> = N extends 1 ? Readonly<[F]> : N extends 2 ? Readonly<[F, F]> : N extends 3 ? Readonly<[F, F, F]> : N extends 4 ? Readonly<[F, F, F, F]> : N extends 5 ? Readonly<[F, F, F, F, F]> : N extends 6 ? Readonly<[F, F, F, F, F, F]> : N extends 7 ? Readonly<[F, F, F, F, F, F, F]> : N extends 8 ? Readonly<[F, F, F, F, F, F, F, F]> : N extends 9 ? Readonly<[F, F, F, F, F, F, F, F, F]> : unknown;
 
-// const test=[{name:"hi",type:'a'},{name:"2",'type':'a'},{"name":"3",'type':'a'}] as const;
-// function fn( b:D<typeof test>){
-// b[2]
-// }
 
-// export type DataModel<FM extends Readonly<F[]>> = DataObj<FM[number]>;
-// export type DataModel<FM extends Readonly<FormModel<N>>, N extends number > = N extends 1
-// 	? DataObj<FM[0]>
-// 	: N extends 2
-// 	? DataObj<FM[0]> & DataObj<FM[1]>
-// 	: N extends 3
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]>
-// 	: N extends 4
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]>
-// 	: N extends 5
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]> & DataObj<FM[4]>
-// 	// :never;
-// 	: N extends 6
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]> & DataObj<FM[4]> & DataObj<FM[5]>
-// 	: N extends 7
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]> & DataObj<FM[4]> & DataObj<FM[5]> & DataObj<FM[6]>
-// 	: N extends 8
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]> & DataObj<FM[4]> & DataObj<FM[5]> & DataObj<FM[6]> & DataObj<FM[7]>
-// 	: N extends 9
-// 	? DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]> & DataObj<FM[4]> & DataObj<FM[5]> & DataObj<FM[6]> & DataObj<FM[7]> & DataObj<FM[8]>
-// 	: DataObj<FM[0]> & DataObj<FM[1]> & DataObj<FM[2]> & DataObj<FM[3]> & DataObj<FM[4]> & DataObj<FM[5]> & DataObj<FM[6]> & DataObj<FM[7]> & DataObj<FM[8]> & DataObj<FM[number]>
-// 	;
+//type Increment<N> =N extends 0?1:N extends 1?2:N extends 2?3:N extends 3?4:N extends 4?5:N extends 5?6:N extends 6?7:N extends 7?8:N extends 8?9:9;
 
-type Increment<N> =N extends 0?1:N extends 1?2:N extends 2?3:N extends 3?4:N extends 4?5:N extends 5?6:N extends 6?7:N extends 7?8:N extends 8?9:9;
-export type DataModel<FM extends Readonly<FormModel<N>>, N extends number,M extends 0|1|2|3|4|5|6|7|8|9=0 >
-	= M extends N
-	? DataObj<FM[M]>
-	: DataObj<FM[M]> & DataModel<FM,N, Increment<M>>;
+// export type DataModel<FM extends Readonly<FormModel<N>>, N extends number,M extends 0|1|2|3|4|5|6|7|8|9=0 >
+// 	= M extends N
+// 	? DataObj<FM[M]>
+// 	: DataObj<FM[M]> & DataModel<FM,N, Increment<M>>;
 // すみませんだめです
-export type DataObj<K extends F> = {
-	[name in K['name']]: K extends CheckboxAttr
+
+export type DataObj<K extends Readonly<F[]>> = {
+	[name in K[number]['name']]: K[number] extends CheckboxAttr
 		? boolean
-		: K extends NestedAttr<infer N>
-		? DataModel<K['model'],N>
-		: K extends NestedIterableAttr<infer N>
-		? Readonly<DataModel<K['model'],N>[]>
-		: string;
+		: K[number] extends NestedAttr<infer N>
+		? DataObj<N>
+		: K[number] extends NestedIterableAttr<infer N>
+		? DataObj<N>[]
+		: string|number;
 };
-export type NestedAttr<N extends number = number> = {
+export type NestedAttr<T extends Readonly<F[]>> = {
 	type: 'nested';
 	name: string;
 	label?: React.ReactNode;
-	defaultValue?: Readonly<DataModel<FormModel<N>,N>>;
-	model: Readonly<FormModel<N>>;
+	defaultValue?: Readonly<DataObj<T>>;
+	model: T;
 };
-export type NestedIterableAttr<N extends number=number> = {
+export type NestedIterableAttr<T extends Readonly<F[]>> = {
 	type: 'nested-iterable';
 	name: string;
 	label?: React.ReactNode;
-	defaultValue?: Readonly<DataModel<FormModel<N>,N>[]>;
-	model: Readonly<FormModel<N>>;
+	defaultValue?: Readonly<DataObj<T>>;
+	model: T;
 };
 
 export type TextareaAttr = InputAttr<'textarea'>;

@@ -1,5 +1,5 @@
 import React,{ useState, useMemo} from 'react';
-import type { InputAttr,FormModel,DataModel,Primitive, WithId, DataObj,InputType,InputParam,F, Readable,SelectParam,  TextareaParam, CheckboxParam } from './commonInputTypes';
+import type { InputAttr,F, Primitive, WithId, DataObj,InputType,InputParam,SelectParam,  TextareaParam, CheckboxParam } from './commonInputTypes';
 import TextInput from '@/components/Inputs/TextInput';
 import SelectInput from '@/components/Inputs/SelectInput';
 import { FiX,FiPlus } from 'react-icons/fi';
@@ -8,34 +8,32 @@ import NestedForm from './NestedForm';
 
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
-export {FormModel, DataModel};
 
-interface DynamicListProps<T extends FormModel<N>, N extends number> {
+interface DynamicListProps<T extends Readonly<F[]>> {
 	formModel: T,
-	data: DataModel<T, N>[],
-	setData: Setter<DataModel<T, N>[]>,
-	unit:N
+	data: DataObj<T>[],
+	setData: Setter<DataObj<T>[]>,
 }
 
-export default function DynamicList<T extends FormModel<N>, N extends number>({ formModel, data, setData }: DynamicListProps<T, N>) {
+export default function DynamicList<T extends Readonly<F[]>>({ formModel, data, setData }: DynamicListProps<T>) {
 	const [index, setIndex] = useState(0);
 	const list = useMemo(()=>data?.map(item=>withId(item)),[data]);
 
-	function withId(initialValue: DataModel<T,N>):WithId<DataModel<T,N>>{
+	function withId(initialValue: DataObj<T>):WithId<DataObj<T>>{
 		const id = ('id' in initialValue) ? initialValue.id as number|string: index; // NOTE initialValue.id be prioritized over index, overwriting the original id may cause errors
 		setIndex((index) => index + 1);
-		return { ...initialValue, id, };
+		return { ...initialValue, id };
 	}
-	function addItem(initialValue: DataModel<T,N>) {
+	function addItem(initialValue: DataObj<T>) {
 		console.log("addItem",{initialValue})
 		setData([...list, withId(initialValue)]);
 	}
 	function handleAdd(e:React.MouseEvent<HTMLButtonElement, MouseEvent>) {
 		e.preventDefault();
-		const newItem: DataModel<T,N> = formModel.reduce((acc, field) => ({ ...acc, [field.name]: field.defaultValue }),{}) as unknown as DataModel<T,N>;
+		const newItem: DataObj<T> = formModel.reduce((acc, field) => ({ ...acc, [field.name]: field.defaultValue }),{}) as unknown as DataObj<T>;
 		addItem(newItem);
 	}
-	function handleChange(id: string | number, name: keyof WithId<DataModel<T,N>> & string, value: Primitive) {
+	function handleChange<Name extends keyof WithId<DataObj<T>>>(id: string | number, name:Name, value: Primitive) {
 		const newList = list.map(item => (item.id === id ? { ...item, [name]: value } : item));
 		setData(newList);
 	}

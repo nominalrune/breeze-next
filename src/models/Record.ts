@@ -18,6 +18,15 @@ export interface RecordDTO {
 	created_at: string;
 	updated_at: string;
 }
+export interface RecordCreateDTO {
+	title: string;
+	description?: string;
+	related_task_id?: number|string;
+	topic_id?:number|string;
+	date: string;
+	time: number|string;
+	user_id: number|string;
+}
 
 export class Record {
 	public kind = "App\\Models\\Record" as "App\\Models\\Record";
