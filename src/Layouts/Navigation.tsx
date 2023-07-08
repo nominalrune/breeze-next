@@ -11,12 +11,19 @@ import { DropdownButton } from '@/components/DropdownLink';
 import { useAuthContext } from '@/hooks/useAuth';
 import { useState } from 'react';
 import { useEffect } from 'react';
-const Navigation = () => {
+import { FiChevronDown } from 'react-icons/fi';
+export default function Navigation() {
 	const { user, logout } = useAuthContext();
 	const [open, setOpen] = useState(false);
 	useEffect(() => {
 		console.log({ user });
 	}, []);
+	const links = [
+		{ link: '/dashboard', label: 'Dashboard' },
+		{ link: '/tasks', label: 'Tasks' },
+		{ link: '/records', label: 'Records' },
+		{ link: '/calendar', label: 'Calendar' },
+	];
 	return (
 		<nav className="bg-white border-b border-gray-100">
 			{/* Primary Navigation Menu */}
@@ -31,60 +38,25 @@ const Navigation = () => {
 						</div>
 
 						{/* Navigation Links */}
-						<div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-							<NavLink
-								to="/dashboard"
-							// active={route().current('dashboard')}
-							>
-								Dashboard
-							</NavLink>
-						</div>
-						<div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-							<NavLink
-								to="/tasks"
-							>
-								Tasks
-							</NavLink>
-						</div>
-						<div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-							<NavLink
-								to="/records"
-							>
-								Records
-							</NavLink>
-						</div>
-						<div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-							<NavLink
-								to="/calendar"
-							>
-								Calendar
-							</NavLink>
-						</div>
+						{
+							links.map(({ link, label }) =>
+								<NavigationLink key={link} link={link} label={label} />
+							)
+						}
 					</div>
 
 					{/* Settings Dropdown */}
 					<div className="hidden sm:flex sm:items-center sm:ml-6">
 						{user ? <Dropdown
-							align="right"
-							width="48"
 							trigger={
-								<button className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
+								<button className="flex items-center text-sm font-medium text-gray-800 p-2 rounded-sm hover:opacity-75 hover:bg-slate-50 focus:outline-none transition duration-150 ease-in-out">
 									<div>{user?.name}</div>
-									<div className="ml-1">
-										<svg
-											className="fill-current h-4 w-4"
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 20 20">
-											<path
-												fillRule="evenodd"
-												d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									</div>
+									<FiChevronDown className="ml-1 h-4 w-4" />
 								</button>
 							}>
-							{/* Authentication */}
+							<DropdownButton onClick={()=>{}}>
+								Profile
+							</DropdownButton>
 							<DropdownButton onClick={logout}>
 								Logout
 							</DropdownButton>
@@ -95,36 +67,7 @@ const Navigation = () => {
 							)}
 					</div>
 
-					{/* Hamburger */}
-					<div className="-mr-2 flex items-center sm:hidden">
-						<button
-							onClick={() => setOpen(open => !open)}
-							className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-							<svg
-								className="h-6 w-6"
-								stroke="currentColor"
-								fill="none"
-								viewBox="0 0 24 24">
-								{open ? (
-									<path
-										className="inline-flex"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								) : (
-									<path
-										className="inline-flex"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M4 6h16M4 12h16M4 18h16"
-									/>
-								)}
-							</svg>
-						</button>
-					</div>
+					<Hamburger open={open} onClick={() => setOpen(open => !open)} />
 				</div>
 			</div>
 
@@ -197,4 +140,45 @@ const Navigation = () => {
 	);
 };
 
-export default Navigation;
+
+function NavigationLink({ link, label }: { link: string, label: string; }) {
+	return <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+		<NavLink
+			to={link}
+			active={new RegExp(`${link}(\/.*)?$`).test(location.pathname)}
+		>
+			{label}
+		</NavLink>
+	</div>;
+}
+function Hamburger({ open, onClick }: { open: boolean, onClick: () => void; }) {
+	return <div className="-mr-2 flex items-center sm:hidden">
+		<button
+			onClick={onClick}
+			className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+			<svg
+				className="h-6 w-6"
+				stroke="currentColor"
+				fill="none"
+				viewBox="0 0 24 24">
+				{open ? (
+					<path
+						className="inline-flex"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="2"
+						d="M6 18L18 6M6 6l12 12"
+					/>
+				) : (
+					<path
+						className="inline-flex"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="2"
+						d="M4 6h16M4 12h16M4 18h16"
+					/>
+				)}
+			</svg>
+		</button>
+	</div>;
+}
