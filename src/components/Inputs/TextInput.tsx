@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react';
 export type InputType = "checkbox" | "color" | "date" | "datetime-local" | "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "reset" | "tel" | "text" | "time" | "url" | "week";
 
-type Param<T extends InputType | "textarea"> = { type: T; underlineStyle?:boolean; } & (T extends "textarea" ? TextareaParam : InputParam<T>);
+type Param<T extends InputType | "textarea"> = { type: T; underlineStyle?: boolean; } & (T extends "textarea" ? TextareaParam : InputParam<T>);
 
 type TextareaParam = React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> & {
 	outerClassName?: string;
@@ -17,16 +17,17 @@ type InputParam<T> = Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTML
 	value: string;
 });
 
-export default function TextInput<T extends InputType | "textarea" = "text">(
-	{ type="text", name, id, value, className, outerClassName,underlineStyle, required = false, onChange, ...rest }: Param<T>,
+export default function TextInput<T extends InputType | "textarea">(
+	{ type, value, className = '', outerClassName = '', underlineStyle, onChange, ...rest }: Param<T>,
 ) {
-	const classString = underlineStyle?"border-0 border-b-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 invalid:border-red-300 focus:invalid:border-red-300 focus:invalid:ring-red-300 backdrop-blur ": "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 invalid:border-red-300 focus:invalid:border-red-300 focus:invalid:ring-red-300 rounded-md shadow-sm ";
+	const classString = underlineStyle
+		? "block border-0 border-b-2 border-gray-300 focus:ring-0 focus:border-indigo-500 invalid:border-red-300 focus:invalid:border-red-300 backdrop-blur "
+		: "block border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 invalid:border-red-300 focus:invalid:border-red-300 focus:invalid:ring-red-300 rounded-md shadow-sm ";
 	return (
-		<div className={"flex flex-col items-start justify-center" + outerClassName}>
+		<div className={"flex flex-col " + outerClassName} >
 			{type === "textarea"
 				? <textarea
 					{...rest}
-					name={name}
 					value={value as string}
 					className={
 						classString
@@ -34,52 +35,42 @@ export default function TextInput<T extends InputType | "textarea" = "text">(
 						className
 					}
 					onChange={onChange as (event: ChangeEvent<HTMLTextAreaElement>) => any}
-					required={required}
 					style={{ fontSize: "inherit" }}
 				/>
 				: type === "number"
 					? <input
 						{...rest}
 						type='number'
-						name={name}
-						id={id ?? name}
 						value={+value}
 						className={
 							classString
 							+ className
 						}
 						style={{ fontSize: "inherit" }}
-						required={required}
 						onChange={onChange as (event: ChangeEvent<HTMLInputElement>) => any}
 					/>
 					: type === "checkbox"
 						? <input
 							{...rest}
 							type="checkbox"
-							name={name}
-							id={id ?? name}
 							checked={!!value as boolean}
 							className={
 								classString +
-								className + " w-5 h-5"
+								className ?? "" + " w-5 h-5"
 							}
 							style={{ fontSize: "inherit" }}
-							required={required}
 							onChange={onChange as (event: ChangeEvent<HTMLInputElement>) => any}
 						/>
 						:
 						<input
 							{...rest}
 							type={type}
-							name={name}
-							id={id ?? name}
 							value={value as string}
 							className={
 								classString +
 								className
 							}
 							style={{ fontSize: "inherit" }}
-							required={required}
 							onChange={onChange as (event: ChangeEvent<HTMLInputElement>) => any}
 						/>
 			}

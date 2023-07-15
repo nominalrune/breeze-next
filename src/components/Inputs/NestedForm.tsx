@@ -8,7 +8,7 @@ import SelectInput from '@/components/Inputs/SelectInput';
 import InputLabel from '@/components/Inputs/InputLabel';
 import Button from '@/components/Buttons/Button';
 export { NestedIterableAttr,NestedAttr};
-type OnClick<T extends Readonly<F[]>> = (data: DataObj<T>) => any;
+type OnClick<T extends Readonly<F[]>> = (data: DataObj<T>) => Promise<any>;
 type Property<T extends Readonly<F[]>> = {
 	properties: T;
 	level?: number;
@@ -35,8 +35,12 @@ export default function NestedForm<T extends Readonly<F[]>>({ properties, primar
 			setData(event.target.name, event.target.value);
 		}
 	}
+	function handleSubmit(data: DataObj<T>){
+		primaryAction?.onClick(data)
+			.then(res=>{_setData(initialize(properties))});
+	}
 	return (
-		<form onSubmit={(e) => { e.preventDefault(); primaryAction?.onClick(data); }} className={`flex ${level === 0 ? "flex-col gap-4" : "flex-row"}`} >
+		<form onSubmit={(e) => { e.preventDefault();handleSubmit(data)  }} className={`flex ${level === 0 ? "flex-col gap-4" : "flex-row"}`} >
 			{properties.map((prop, i) =>
 				prop.type === 'hidden' ? (
 					<React.Fragment key={prop.name}></React.Fragment> // no need to show data because the value is already set
@@ -139,5 +143,5 @@ export default function NestedForm<T extends Readonly<F[]>>({ properties, primar
 			} else {
 				return { ...acc, [curr.name]: curr.defaultValue };
 			}
-		}, {}) as {[key in keyof T[number]]: T[number][key];};
+		}, {}) as DataObj<T>;
 	}

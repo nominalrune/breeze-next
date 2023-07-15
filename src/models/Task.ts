@@ -3,7 +3,7 @@ import type { CommentDTO } from './Comment';
 export interface Subtask {
 	state: string | number,
 	title: string,
-	subtasks?: Readonly<Subtask[]>,
+	subtasks: Subtask[],
 }
 export interface TaskDTO {
 	kind?: "App\\Models\\Task";

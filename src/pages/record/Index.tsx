@@ -34,7 +34,6 @@ export function Index() {
 				<h1 className='p-3 text-3xl '>
 					records
 				</h1></div>
-			{/* <Table items={records} keys={['date',"title",'time','description']} /> */}
 			{
 				!records ?<div className='p-3'><SkeletonCard /></div>: records?.length > 0 ? records.map(record => (
 					<div key={"records" + record.id} className='block m-6 p-3 bg-white shadow rounded'>
@@ -42,9 +41,10 @@ export function Index() {
 						<p className='px-6 text-slate-800' >{record.description}</p>
 						<Comments commentable={record} loginUser={user} update={update} />
 					</div>
-				)) : <>no data found</>
+				)) : <div className='text-center'>no data found</div>
 			}
 			<Link to={'/records/create'}><FloatingActionButton icon="+" /></Link>
 		</div>
 	);
 }
+

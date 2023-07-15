@@ -1,7 +1,5 @@
 import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton';
 import { IndexCard } from '@/components/Task/IndexCard';
-import { IndexList } from '@/components/Task/IndexList';
-import { TaskTree } from '@/components/Task/Tree';
 
 import type { TaskDTO } from '@/models/Task';
 import TaskService from '@/services/TaskService';
@@ -9,9 +7,14 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
+import { FiServer, FiTrello } from 'react-icons/fi';
+import ListView from '@/components/Task/ListVIew';
+import KanbanView from '@/components/Task/KanbanView';
+import { UserDTO } from '@/models/User';
 export function Index() {
 	const { user } = useAuthContext();
 	const [tasks, setTasks] = useState<TaskDTO[]>([]);
+	const [view, setView] = useState<'list' | 'kanban'>('list');
 	async function updateTask(task: TaskDTO) {
 		const taskService = new TaskService();
 		await taskService.update(task).then(() => toast.success('Task updated'));
@@ -25,21 +28,30 @@ export function Index() {
 		});
 		return () => taskService.abort();
 	}, []);
-	return (
-		<div className='p-3'>
-			<h1 className='text-3xl '>
+	function buttonClass(on:boolean=false){
+		return `text-4xl p-1 border-2 border-slate-300 first:rounded-l-md last:rounded-r-md last:border-l-0 hover:bg-slate-50 ${on?'bg-slate-200':''}`;
+	}
+	return <>
+		<div className='py-3 flex justify-between'>
+			<h1 className='text-3xl'>
 				Tasks
 			</h1>
-			<h2 className='text-xl'>Ongoing:</h2>
-			<IndexList tasks={tasks.filter(item => item.state === 1)} user={user} update={updateTask} />
-			<h2 className='text-xl'>Todo:</h2>
-			<IndexList tasks={tasks.filter(item => item.state === 0)} user={user} update={updateTask} />
-			<h2 className='text-xl'>Done:</h2>
-			<IndexList tasks={tasks.filter(item => item.state === 3)} user={user} update={updateTask} />
-			<h2 className='text-xl'>Pending:</h2>
-			<IndexList tasks={tasks.filter(item => item.state === 2)} user={user} update={updateTask} />
-
-			<Link to={'/tasks/create'}><FloatingActionButton icon="+" /></Link>
+			<div className='flex text-slate-600 mr-2'>
+				<FiServer onClick={()=>setView('list')} className={buttonClass(view==="list")} />
+				<FiTrello onClick={()=>setView('kanban')} className={buttonClass(view==='kanban')} />
+			</div>
 		</div>
-	);
+		<hr />
+		<div className='py-3'>
+			<TaskView view={view} tasks={tasks} user={user} update={updateTask} />
+		</div>
+		<Link to={'/tasks/create'}><FloatingActionButton icon="+" /></Link>
+	</>;
 }
+
+function TaskView({ view, tasks, user, update }: { view: string, tasks: TaskDTO[], user: UserDTO | undefined, update: (task: TaskDTO) => Promise<TaskDTO>; }) {
+	return view === 'list'
+		? <ListView tasks={tasks} user={user} update={update} />
+		: <KanbanView tasks={tasks} user={user} update={update} />;
+}
+
