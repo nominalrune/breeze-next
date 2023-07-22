@@ -11,6 +11,7 @@ import { FiServer, FiTrello } from 'react-icons/fi';
 import ListView from '@/components/Task/ListVIew';
 import KanbanView from '@/components/Task/KanbanView';
 import { UserDTO } from '@/models/User';
+import Main from '@/Layouts/Main';
 export function Index() {
 	const { user } = useAuthContext();
 	const [tasks, setTasks] = useState<TaskDTO[]>([]);
@@ -28,17 +29,17 @@ export function Index() {
 		});
 		return () => taskService.abort();
 	}, []);
-	function buttonClass(on:boolean=false){
-		return `text-4xl p-1 border-2 border-slate-300 first:rounded-l-md last:rounded-r-md last:border-l-0 hover:bg-slate-50 ${on?'bg-slate-200':''}`;
+	function buttonClass(on: boolean = false) {
+		return `text-4xl p-1 border-2 border-slate-300 first:rounded-l-md last:rounded-r-md last:border-l-0 hover:bg-slate-50 ${on ? 'bg-slate-200' : ''}`;
 	}
-	return <>
+	return <Main>
 		<div className='py-3 flex justify-between'>
 			<h1 className='text-3xl'>
 				Tasks
 			</h1>
 			<div className='flex text-slate-600 mr-2'>
-				<FiServer onClick={()=>setView('list')} className={buttonClass(view==="list")} />
-				<FiTrello onClick={()=>setView('kanban')} className={buttonClass(view==='kanban')} />
+				<FiServer onClick={() => setView('list')} className={buttonClass(view === "list")} />
+				<FiTrello onClick={() => setView('kanban')} className={buttonClass(view === 'kanban')} />
 			</div>
 		</div>
 		<hr />
@@ -46,7 +47,7 @@ export function Index() {
 			<TaskView view={view} tasks={tasks} user={user} update={updateTask} />
 		</div>
 		<Link to={'/tasks/create'}><FloatingActionButton icon="+" /></Link>
-	</>;
+	</Main>;
 }
 
 function TaskView({ view, tasks, user, update }: { view: string, tasks: TaskDTO[], user: UserDTO | undefined, update: (task: TaskDTO) => Promise<TaskDTO>; }) {

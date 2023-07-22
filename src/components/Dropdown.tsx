@@ -33,7 +33,6 @@ const Dropdown = ({
 		<div className="relative">
 			<button
 				popovertarget={id}
-			// onClick={() => setOpen(!open)}
 			>{trigger}</button>
 			<div
 				id={id}

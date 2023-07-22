@@ -49,10 +49,10 @@ export default function Navigation() {
 					<div className="hidden sm:flex sm:items-center sm:ml-6">
 						{user ? <Dropdown
 							trigger={
-								<button className="flex items-center text-sm font-medium text-gray-800 p-2 rounded-sm hover:opacity-75 hover:bg-slate-50 focus:outline-none transition duration-150 ease-in-out">
+								<div className="flex items-center text-sm font-medium text-gray-800 p-2 rounded-sm hover:opacity-75 hover:bg-slate-50 focus:outline-none transition duration-150 ease-in-out">
 									<div>{user?.name}</div>
 									<FiChevronDown className="ml-1 h-4 w-4" />
-								</button>
+								</div>
 							}>
 							<DropdownButton onClick={()=>{}}>
 								Profile

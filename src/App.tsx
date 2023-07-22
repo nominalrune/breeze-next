@@ -29,28 +29,28 @@ export default function App() {
 			<Routes>
 				<Route path="/" element={<AppLayout />}>
 					<Route index element={<Home />} />
-					<Route path="dashboard" element={<ForceLogin><Dashboard /></ForceLogin>} />
+					<Route path="dashboard" element={<Dashboard />} />
 					{/* <Route path="/tasks"  element={<Tasks />} />
                 <Route path="/tasks/create" element={<TaskCreate />} />
                  */}
 					<Route path="tasks">
-						<Route index element={<ForceLogin><Tasks /></ForceLogin>} />
-						<Route path="create" element={<ForceLogin><TaskCreate /></ForceLogin>} />
-						<Route path=":taskId" element={<ForceLogin><TaskShow /></ForceLogin>} />
+						<Route index element={<Tasks />} />
+						<Route path="create" element={<TaskCreate />} />
+						<Route path=":taskId" element={<TaskShow user={auth.user} />} />
 					</Route>
 					<Route path="calendar">
-						<Route index element={<ForceLogin><Calendar user={auth.user} /></ForceLogin>} />
-						<Route path="create" element={<ForceLogin><CalendarCreate /></ForceLogin>} />
-						<Route path=":calendarId" element={<ForceLogin><CalendarShow /></ForceLogin>} />
+						<Route index element={<Calendar user={auth.user} />} />
+						<Route path="create" element={<CalendarCreate />} />
+						<Route path=":calendarId" element={<CalendarShow />} />
 					</Route>
 					<Route path="records">
-						<Route index element={<ForceLogin><Record /></ForceLogin>} />
-						<Route path="create" element={<ForceLogin><RecordCreate /></ForceLogin>} />
-						<Route path=":recordId" element={<ForceLogin><RecordShow /></ForceLogin>} />
+						<Route index element={<Record />} />
+						<Route path="create" element={<RecordCreate />} />
+						<Route path=":recordId" element={<RecordShow />} />
 					</Route>
 					{/* </Route> */}
-					{/* <Route path="dashboard" element={<ForceLogin><Dashboard /></ForceLogin>} />
-                    <Route path="task" element={<ForceLogin><Tasks /></ForceLogin>} /> */}
+					{/* <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="task" element={<Tasks />} /> */}
 					<Route path="login" element={<Login />} />
 					<Route path="register" element={<Register />} />
 					<Route path="verify-email" element={<VerifyEmail />} />

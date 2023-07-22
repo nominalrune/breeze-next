@@ -4,7 +4,7 @@ export interface InputAttr<T> {
 	type: T,
 	name: string,
 	label?: React.ReactNode,
-	defaultValue?: T extends 'checkbox' ? boolean : string,
+	defaultValue?: Primitive,
 	required?: boolean,
 	attributes?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLInputElement>, HTMLInputElement>,
 }
@@ -25,14 +25,23 @@ export type F = Readonly<InputAttr<InputType> | SelectAttr | CheckboxAttr | Text
 // すみませんだめです
 
 export type DataObj<K extends Readonly<F[]>> = {
-	[name in K[number]['name']]: K[number] extends CheckboxAttr
-		? boolean
-		: K[number] extends NestedAttr<infer N>
-		? DataObj<N>
-		: K[number] extends NestedIterableAttr<infer N>
-		? DataObj<N>[]
-		: string|number;
+	[name in K[number]['name']]: DataType<K[number]>;
 };
+
+
+export type DataItem<K extends Readonly<F>> = {
+	[name in K['name']]: DataType<K>
+};
+export type DataType<K extends F|Readonly<F>> =
+	K extends CheckboxAttr
+	? boolean
+	: K extends NestedAttr<infer N>
+	? DataObj<N>
+	: K extends NestedIterableAttr<infer N>
+	? DataObj<N>[]
+	: K extends InputAttr<"color" | "date" | "datetime-local" | "email" | "file" | "image" | "month" | "password" | "radio" | "range" | "tel" | "text" | "time" | "url" | "week">
+	? string
+	: string | number;
 export type NestedAttr<T extends Readonly<F[]>> = {
 	type: 'nested';
 	name: string;
@@ -49,29 +58,29 @@ export type NestedIterableAttr<T extends Readonly<F[]>> = {
 };
 
 export type TextareaAttr = InputAttr<'textarea'>;
-export interface TextareaParam<T extends WithId<DataObj<{ name: U, type: 'textarea'; }>>, U extends keyof T & string> {
+export interface TextareaParam<T extends WithId<DataItem<{ name: U, type: 'textarea'; }>>, U extends keyof T & string> {
 	field: TextareaAttr,
 	item: T,
 	handleChange: (id: string | number, name: keyof T & string, value: string) => void;
 }
 export type CheckboxAttr = InputAttr<'checkbox'>;
-export interface CheckboxParam<T extends WithId<DataObj<{ name: U, type: 'checkbox'; }>>, U extends keyof T & string> {
+export interface CheckboxParam<T extends WithId<DataItem<{ name: U, type: 'checkbox'; }>>, U extends keyof T & string> {
 	field: CheckboxAttr,
 	item: T,
 	handleChange: (id: string | number, name: U, value: boolean) => void;
 }
 
 export type SelectAttr = InputAttr<'select'> & { options: Readonly<Readonly<[label: string, value: string]>[]>; };
-export interface SelectParam<T extends WithId<DataObj<{ name: U, type: 'select'; options:any[] }>>, U extends keyof T & string> {
+export interface SelectParam<T extends WithId<DataItem<{ name: U, type: 'select'; options: any[]; }>>, U extends keyof T & string> {
 	field: SelectAttr,
 	item: T,
-	handleChange: (id: string | number, name: U, value: string) => void;
+	handleChange: (id: string | number, name: U, value: string | number) => void;
 }
 
-export interface InputParam<T extends WithId<DataObj<{ name: U, type: InputType; }>>, U extends keyof T & string> {
+export interface InputParam<T extends WithId<DataItem<{ name: U, type: InputType; }>>, U extends keyof T & string> {
 	field: InputAttr<InputType>,
 	item: T,
-	handleChange: (id: string | number, name: U, value: string) => void;
+	handleChange: (id: string | number, name: U, value: string | number) => void;
 }
 
 

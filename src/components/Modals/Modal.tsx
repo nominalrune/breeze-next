@@ -6,6 +6,7 @@ import DangerButton from '@/components/Buttons/DangerButton';
 import { FiX } from 'react-icons/fi';
 
 export interface ModalProps {
+	show: boolean,
 	close: () => void,
 	title: React.ReactNode,
 	mainText?: React.ReactNode,
@@ -20,11 +21,10 @@ export interface ModalProps {
 	},
 }
 
-export function Modal({  close, title, mainText, okButton, cancelButton }: ModalProps) {
-	// console.log({close, title, mainText, okButton, cancelButton })
+export function Modal({ show, close, title, mainText, okButton, cancelButton }: ModalProps) {
 	return (
 		<>
-			<Transition appear show={true} as={Fragment}>
+			<Transition appear={show} show={show} as={Fragment}>
 				<Dialog as="div" className="relative z-10" onClose={close}>
 					<Transition.Child
 						as={Fragment}

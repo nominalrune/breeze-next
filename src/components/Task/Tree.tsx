@@ -61,12 +61,11 @@ export function TaskTree({ tasks, update, isEditing, outdent, level = 0 }: TaskT
 						/>
 					</li>
 				))}
-				{isEditing && tasks.length > 0 && (
+				{isEditing &&  (
 					<div
 						className={buttonStyle + ' m-2'}
 						onClick={() => handleAddSubtask()}
 					><FiPlus /></div>
-
 				)}
 			</ul>
 		</div>
