@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NestedForm, { Attr, DataModel } from '@/components/Inputs/NestedForm';
+import NestedForm from '@/components/Inputs/NestedForm';
 import type { TaskDTO } from "@/models/Task";
 import type { Record, RecordDTO } from "@/models/Record";
 import type { UserDTO } from "@/models/User";
@@ -67,7 +67,7 @@ export function CommentBody<T extends Commentable>({ className='',commentable, l
 								</div>
 
 								{editing === comment.id
-									? <Edit comment={comment} commentable={commentable} setEditing={setEditing} update={update} />
+									? <Edit comment={comment as CommentDTO<T>} commentable={commentable} setEditing={setEditing} update={update} />
 									: <div className="m-2 col-span-3 row-span-3 whitespace-pre-wrap relative">
 										{loginUser && loginUser.id === comment.user_id && <div className="absolute right-2 cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setEditing(comment.id)}>編集</div>}
 										{comment.body}
@@ -100,36 +100,36 @@ function Edit<T extends Commentable>({ commentable, className, comment, setEditi
 			<NestedForm
 				properties={getProps(commentable, comment)}
 				primaryAction={{
-					label: "コメントする", onClick: (data, fn) => {
-						comment
+					label: "コメントする", onClick: (data) => {
+						comment // @ts-expect-error
 							? Comment.update({ ...comment, ...data }).then((res) => {
 								setEditing?.(undefined);
-								update?.();
+								update();
 								toast.success("コメントを更新しました");
 							}, (err) => {
 								toast.error("コメントの更新に失敗しました");
-							})
+							}) // @ts-expect-error
 							: Comment.create(data).then((res) => {
-								fn?.setData("body", "");
 								setEditing?.(undefined);
-								update?.();
+								update();
 								toast.success("コメントを追加しました");
 							}, (err) => {
 								toast.error("コメントの追加に失敗しました");
 							});
+						return Promise.resolve();
 					}
 				}}
 				cancelAction={{
-					label: "キャンセル", onClick: (data, fn) => {
-						fn?.setData("body", "");
+					label: "キャンセル", onClick: (data) => {
 						setEditing && setEditing(undefined);
+						return Promise.resolve();
 					}
 				}}
 			/></div>
 	);
 };
 
-function getProps<T extends Commentable>(commentable: T, comment?: CommentDTO<T>): Attr[] {
+function getProps<T extends Commentable>(commentable: T, comment?: CommentDTO<T>) {
 	return [
 		{
 			name: "id",
@@ -152,5 +152,5 @@ function getProps<T extends Commentable>(commentable: T, comment?: CommentDTO<T>
 			type: "textarea",
 			attributes: { "placeholder": "コメントを書く..." }
 		},
-	];
+	] as const;
 }
