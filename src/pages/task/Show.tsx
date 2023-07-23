@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { axios } from '@/lib/axios';
 import type { TaskDTO, Subtask } from '@/models/Task';
-import type { User } from '@/models/User';
+import type { User, UserDTO } from '@/models/User';
 import TextInput from '@/components/Inputs/TextInput';
 import Button from '@/components/Buttons/Button';
 
@@ -13,7 +13,7 @@ import Spinner from '@/components/Skeletons/Spinner';
 import { TaskTree } from '@/components/Task/Tree';
 import { toast } from 'react-hot-toast';
 
-export function Show({ user }: { user: User; }) {
+export function Show({ user }: { user: UserDTO|undefined; }) {
 	const [task, setTask] = useState<TaskDTO | undefined>();
 	const [isEditing, setIsEditing] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,7 +75,7 @@ function TaskView({ task, onEdit, onSubmit }: TaskViewProps) {
 					tasks={task.subtasks ?? []}
 					update={handleSubtaskUpdate}
 					isEditing={false}
-					appendToParent={() => { throw new Error("you cannot append to root parent"); }}
+					outdent={() => { throw new Error("you cannot append to root parent"); }}
 				/>
 			</div>}
 			footer={task && <div
