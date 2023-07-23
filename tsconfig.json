@@ -27,6 +27,8 @@
         "noErrorTruncation":false
     },
     "include": [
-        "./src"
-, "../public/dist", "../assets"    ]
+        "./src",
+		"../public/dist",
+		"../assets"
+	    ]
 }
