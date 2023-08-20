@@ -1,20 +1,25 @@
-import { api,axios, abort as _abort, csrf } from '@/lib/axios';
+import { api, abort as _abort } from '@/lib/axios';
 import { useState, useContext, createContext, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import type { UserDTO } from '@/models/User';
 
+export type Auth = ReturnType<typeof useAuth>;
+
+export const AuthContext = createContext<Auth|undefined>(undefined); // FIXME
+export const useAuthContext = () => useContext(AuthContext);
+
 
 export const useAuth = () => {
-	const [user, setUser] = useState<UserDTO>();
+	const [user, setUser] = useState<UserDTO|undefined>(undefined);
 	useEffect(() => {
 		prelogin();
-		// 	// return () => {
-		// 	// 	abort();
-		// 	// };
+		return () => {
+			abort();
+		};
 	}, []);
 	const navigate = useNavigate();
 	function abort() {
-		// _abort();
+		_abort();
 		// setUser(undefined);
 	}
 
@@ -120,7 +125,3 @@ export const useAuth = () => {
 		resendEmailVerification,
 	};
 };
-export type Auth = ReturnType<typeof useAuth>;
-
-export const AuthContext = createContext<Auth>({} as Auth); // FIXME
-export const useAuthContext = () => useContext(AuthContext);

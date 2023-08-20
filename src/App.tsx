@@ -27,7 +27,7 @@ export default function App() {
 		<AuthContext.Provider value={auth}>
 			{/* // 	<UserContext.Provider value={auth.user}> */}
 			<Routes>
-				<Route path="/" element={<AppLayout />}>
+				<Route path="/" element={<AppLayout user={auth.user}/>}>
 					<Route index element={<Home />} />
 					<Route path="dashboard" element={<Dashboard />} />
 					{/* <Route path="/tasks"  element={<Tasks />} />

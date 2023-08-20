@@ -1,9 +1,7 @@
-import type { TailwindLength } from '@/utiltype';
 interface SpinnerProps {
-	size?: TailwindLength;
-	color?: "blue" | "red" | "green" | "yellow" | "gray" | "purple" | "pink" | "indigo" | "slate"|"white" ; // FIXME
+	className?: string;
 }
-export default function Spinner({ size="10", color="blue" }: SpinnerProps) {
+export default function Spinner({ className="" }: SpinnerProps) {
 	return (
-		<div className={`animate-spin h-${size} w-${size} border-4 ${color==="white"?"border-white":`border-${color}-500`} border-t-transparent rounded-full`}></div>);
+		<div className={`animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full ${className}`}></div>);
 }

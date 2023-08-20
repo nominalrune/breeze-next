@@ -83,8 +83,5 @@ export interface InputParam<T extends WithId<DataItem<{ name: U, type: InputType
 	handleChange: (id: string | number, name: U, value: string | number) => void;
 }
 
-
-
-
 export type WithId<T extends object> = T & { id: number | string; };
 export type InputType = "color" | "date" | "datetime-local" | "email" | "file" | "hidden" | "image" | "month" | "number" | "password" | "radio" | "range" | "reset" | "tel" | "text" | "time" | "url" | "week";
