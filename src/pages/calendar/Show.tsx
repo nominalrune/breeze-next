@@ -1,30 +1,30 @@
-import {useEffect,useState} from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {axios} from '@/lib/axios';
+import api from '@/lib/axios';
 import type { CalendarEvent } from '@/models/CalendarEvent';
-import type { UserDTO } from '@/models/User';
+import type { UserDTO } from '@/models/User/User';
 
-export function Show({user}:{user?:UserDTO}){
-	const [event,setEvent]=useState<CalendarEvent>();
+export default function Show({ user }: { user?: UserDTO; }) {
+	const [event, setEvent] = useState<CalendarEvent>();
 	let { calendarId } = useParams();
-	useEffect(()=>{
-		axios.get('/calendar/'+calendarId).then(res=>{
-			console.log({res})
-			setEvent(res.data);
-		})
-	},[])
+	useEffect(() => {
+		api().get('/calendar/' + calendarId).then(async res => {
+			console.log({ res });
+			setEvent(await res.json());
+		});
+	}, []);
 
 	return <div className='m-10 p-6 bg-white rounded'>
-	<div className="m-1 flex justify-between items-end">
-	<div className="m-3 text-3xl">{event?.title}</div>
-	<div className=' '>
-		<div className="m-1 text-xs text-right">start at: {new Date(event?.start_at).toLocaleString('ja-JP')}</div>
-		<div className="m-1 text-xs text-right">end at: {new Date(event?.end_at).toLocaleString('ja-JP')}</div>
-	</div>
-	</div>
-	<hr/>
-	<div className="m-3 text-slate-800">{event?.description}</div>
-	<div className=""></div>
+		<div className="m-1 flex justify-between items-end">
+			<div className="m-3 text-3xl">{event?.title}</div>
+			<div className=' '>
+				{event?.start_at && <div className="m-1 text-xs text-right">start at: {new Date(event.start_at).toLocaleString('ja-JP')}</div>}
+				{event?.end_at && <div className="m-1 text-xs text-right">end at: {new Date(event.end_at).toLocaleString('ja-JP')}</div>}
+			</div>
+		</div>
+		<hr />
+		<div className="m-3 text-slate-800">{event?.description}</div>
+		<div className=""></div>
 
-	</div>
+	</div>;
 }

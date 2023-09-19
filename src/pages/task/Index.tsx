@@ -5,15 +5,15 @@ import type { TaskDTO } from '@/models/Task';
 import TaskService from '@/services/TaskService';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '@/hooks/useAuth';
+import useUser from '@/hooks/useUser';
 import toast from 'react-hot-toast';
 import { FiServer, FiTrello } from 'react-icons/fi';
 import ListView from '@/components/Task/ListVIew';
 import KanbanView from '@/components/Task/KanbanView';
-import { UserDTO } from '@/models/User';
+import { UserDTO } from '@/models/User/User';
 import Main from '@/Layouts/Main';
-export function Index() {
-	const { user } = useAuthContext();
+export default function Index() {
+	const user = useUser();
 	const [tasks, setTasks] = useState<TaskDTO[]>([]);
 	const [view, setView] = useState<'list' | 'kanban'>('list');
 	async function updateTask(task: TaskDTO) {
@@ -25,9 +25,10 @@ export function Index() {
 	useEffect(() => {
 		const taskService = new TaskService();
 		taskService.list().then(data => {
+			console.log({ data });
 			setTasks(data);
 		});
-		return () => taskService.abort();
+		// return () => taskService.abort();
 	}, []);
 	function buttonClass(on: boolean = false) {
 		return `text-4xl p-1 border-2 border-slate-300 first:rounded-l-md last:rounded-r-md last:border-l-0 hover:bg-slate-50 ${on ? 'bg-slate-200' : ''}`;
@@ -51,6 +52,7 @@ export function Index() {
 }
 
 function TaskView({ view, tasks, user, update }: { view: string, tasks: TaskDTO[], user: UserDTO | undefined, update: (task: TaskDTO) => Promise<TaskDTO>; }) {
+	if(tasks.length === 0) return <div className='text-center text-xl text-slate-600'>No tasks</div>;
 	return view === 'list'
 		? <ListView tasks={tasks} user={user} update={update} />
 		: <KanbanView tasks={tasks} user={user} update={update} />;

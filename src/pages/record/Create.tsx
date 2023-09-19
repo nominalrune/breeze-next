@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Property } from '@/components/Inputs/EditForm';
 import toast from 'react-hot-toast';
 
-export function Create() {
+export default function Create() {
 	const [errors, setErrors] = useState<any>();
 	const navigate = useNavigate();
 	function handleSuccess(res: { data: { data: any, url: string; }; }) {

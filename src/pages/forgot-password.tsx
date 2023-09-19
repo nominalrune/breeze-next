@@ -5,14 +5,13 @@ import Button from '@/components/Buttons/PrimaryButton'
 import Input from '@/components/Input'
 import InputError from '@/components/Inputs/InputError'
 import Label from '@/components/Label'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { useState,ChangeEvent } from 'react'
 // import { AuthService, AuthContext } from '@/services/AuthService';
-import { useAuthContext} from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 
 const ForgotPassword = () => {
-    const { forgotPassword } = useAuthContext()
-
+    const {forgotPassword} = useAuth()
     const [email, setEmail] = useState('')
     const [errors, setErrors] = useState<any>([]) //FIXME - any
     const [status, setStatus] = useState(null)
@@ -54,7 +53,7 @@ const ForgotPassword = () => {
                             autoFocus
                         />
 
-                        <InputError messages={errors.email} className="mt-2" />
+                        <InputError message={errors.email} className="mt-2" />
                     </div>
 
                     <div className="flex items-center justify-end mt-4">

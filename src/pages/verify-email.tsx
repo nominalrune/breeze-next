@@ -1,12 +1,12 @@
 import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import Button from '@/components/Buttons/PrimaryButton'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { AuthService, AuthContext } from '@/services/AuthService';
-import { useState,useContext } from 'react'
-import { useAuthContext,Auth} from '@/hooks/useAuth';
+import { useState} from 'react'
+import  useAuth from '@/hooks/useAuth';
 const VerifyEmail = () => {
-    const { logout, resendEmailVerification } = useAuthContext()
+    const { logout, resendEmailVerification } = useAuth()
 
     const [status, setStatus] = useState(null)
 

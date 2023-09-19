@@ -2,19 +2,18 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import AuthSessionStatus from '@/components/AuthSessionStatus'
 import Button from '@/components/Buttons/PrimaryButton'
-import GuestLayout from '@/components/Layouts/GuestLayout'
+import AppLayout from '@/Layouts/AppLayout'
 import Input from '@/components/Input'
-import InputError from '@/components/InputError'
+// import InputError from '@/components/InputError'
 import Label from '@/components/Label'
-import Link from 'next/link'
-import { useAuthContext } from '@/hooks/useAuth'
+// import Link from 'next/link'
+import useAuth from '@/hooks/useAuth'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 
 const PasswordReset = () => {
-    const router = useRouter()
 
-    const { resetPassword } = useAuthContext({ middleware: 'guest' })
+    const { resetPassword } = useAuth()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -22,7 +21,7 @@ const PasswordReset = () => {
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
 
-    const submitForm = event => {
+    const submitForm = (event:SubmitEvent) => {
         event.preventDefault()
 
         resetPassword({
@@ -39,7 +38,6 @@ const PasswordReset = () => {
     }, [router.query.email])
 
     return (
-        <GuestLayout>
             <AuthCard
                 logo={
                     <Link href="/">
@@ -113,7 +111,6 @@ const PasswordReset = () => {
                     </div>
                 </form>
             </AuthCard>
-        </GuestLayout>
     )
 }
 

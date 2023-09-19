@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/dashboard";
 import Home from './pages/index';
@@ -8,26 +7,41 @@ import Login from '@/pages/login';
 import Register from '@/pages/register';
 import VerifyEmail from '@/pages/verify-email';
 import ForgotPassword from '@/pages/forgot-password';
-// import { AuthService, AuthContext, UserContext } from '@/services/AuthService';
-import { ForceLogin } from './Layouts/ForceLogin';
-import { Index as Tasks } from '@/pages/task/Index';
-import { Create as TaskCreate } from '@/pages/task/Create';
-import { Show as TaskShow } from '@/pages/task/Show';
-import { Index as Calendar } from '@/pages/calendar/Index';
-import { Create as CalendarCreate } from '@/pages/calendar/Create';
-import { Show as CalendarShow } from '@/pages/calendar/Show';
-import { Index as Record } from '@/pages/record/Index';
-import { Create as RecordCreate } from '@/pages/record/Create';
-import { Show as RecordShow } from '@/pages/record/Show';
-import { useAuth, AuthContext } from '@/hooks/useAuth';
+import  Tasks from '@/pages/task/Index';
+import TaskCreate from '@/pages/task/Create';
+import TaskShow from '@/pages/task/Show';
+import  Calendar from '@/pages/calendar/Index';
+import CalendarCreate from '@/pages/calendar/Create';
+import CalendarShow from '@/pages/calendar/Show';
+import  Record from '@/pages/record/Index';
+import RecordCreate from '@/pages/record/Create';
+import RecordShow from '@/pages/record/Show';
+import useUser from '@/hooks/useUser';
+// import { lazy } from 'react';
+
+// const Dashboard = lazy(() => import('./pages/dashboard'));
+// const Home = lazy(() => import('./pages/index'));
+// const AppLayout = lazy(() => import('@/Layouts/AppLayout'));
+// const NotFoundPage = lazy(() => import('@/pages/404'));
+// const Login = lazy(() => import('@/pages/login'));
+// const Register = lazy(() => import('@/pages/register'));
+// const VerifyEmail = lazy(() => import('@/pages/verify-email'));
+// const ForgotPassword = lazy(() => import('@/pages/forgot-password'));
+// const Tasks = lazy(() => import('@/pages/task/Index'));
+// const TaskCreate = lazy(() => import('@/pages/task/Create'));
+// const TaskShow = lazy(() => import('@/pages/task/Show'));
+// const Calendar = lazy(() => import('@/pages/calendar/Index'));
+// const CalendarCreate = lazy(() => import('@/pages/calendar/Create'));
+// const CalendarShow = lazy(() => import('@/pages/calendar/Show'));
+// const Record = lazy(() => import('@/pages/record/Index'));
+// const RecordCreate = lazy(() => import('@/pages/record/Create'));
+// const RecordShow = lazy(() => import('@/pages/record/Show'));
 
 export default function App() {
-	const auth = useAuth();
+	const user = useUser(state=>state.user);
 	return (
-		<AuthContext.Provider value={auth}>
-			{/* // 	<UserContext.Provider value={auth.user}> */}
 			<Routes>
-				<Route path="/" element={<AppLayout user={auth.user}/>}>
+				<Route path="/" element={<AppLayout user={user}/>}>
 					<Route index element={<Home />} />
 					<Route path="dashboard" element={<Dashboard />} />
 					{/* <Route path="/tasks"  element={<Tasks />} />
@@ -36,10 +50,10 @@ export default function App() {
 					<Route path="tasks">
 						<Route index element={<Tasks />} />
 						<Route path="create" element={<TaskCreate />} />
-						<Route path=":taskId" element={<TaskShow user={auth.user} />} />
+						<Route path=":taskId" element={<TaskShow user={user} />} />
 					</Route>
 					<Route path="calendar">
-						<Route index element={<Calendar user={auth.user} />} />
+						<Route index element={<Calendar user={user} />} />
 						<Route path="create" element={<CalendarCreate />} />
 						<Route path=":calendarId" element={<CalendarShow />} />
 					</Route>
@@ -58,7 +72,5 @@ export default function App() {
 					<Route path="*" element={<NotFoundPage />} />
 				</Route>
 			</Routes>
-			{/* // 	</UserContext.Provider> */}
-		</AuthContext.Provider>
 	);
 };

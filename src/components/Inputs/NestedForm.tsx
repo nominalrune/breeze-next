@@ -7,8 +7,8 @@ import TextInput from '@/components/Inputs/TextInput';
 import SelectInput from '@/components/Inputs/SelectInput';
 import InputLabel from '@/components/Inputs/InputLabel';
 import Button from '@/components/Buttons/Button';
-export { NestedIterableAttr,NestedAttr};
-type OnClick<T extends Readonly<F[]>> = (data: DataObj<T>) => Promise<any>;
+export { NestedIterableAttr,NestedAttr, DataObj};
+export type OnClick<T extends Readonly<F[]>> = (data: DataObj<T>) => Promise<any>;
 type Property<T extends Readonly<F[]>> = {
 	properties: T;
 	level?: number;

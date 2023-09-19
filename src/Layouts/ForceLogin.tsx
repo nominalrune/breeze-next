@@ -1,14 +1,12 @@
-// import { useContext } from 'react';
-
 import { LoginForm } from '@/components/Login/LoginForm';
 import Spinner from '@/components/Skeletons/Spinner';
-import { useAuthContext, type Auth } from '@/hooks/useAuth';
+import  useUser from '@/hooks/useUser';
 import { useEffect, useState } from 'react';
 
 export function ForceLogin({ children }: { children: React.ReactNode}) {
-	const auth = useAuthContext();
+	const user = useUser(state=>state.user);
 	return (
-		auth.user
+		user
 			? <>{children}</>
 			:
 			<div className="fixed w-full h-full grid items-center justify-center">

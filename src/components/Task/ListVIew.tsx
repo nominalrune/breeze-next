@@ -1,6 +1,6 @@
 import { IndexList } from '@/components/Task/IndexList';
 import { TaskDTO } from '@/models/Task';
-import { UserDTO } from '@/models/User';
+import { UserDTO } from '@/models/User/User';
 
 export default function ListView({ tasks, user, update }: { tasks: TaskDTO[], user: UserDTO | undefined, update: (task: TaskDTO) => Promise<TaskDTO>; }) {
 	return <>

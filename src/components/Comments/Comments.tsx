@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NestedForm from '@/components/Inputs/NestedForm';
 import type { TaskDTO } from "@/models/Task";
 import type { Record, RecordDTO } from "@/models/Record";
-import type { UserDTO } from "@/models/User";
+import type { UserDTO } from "@/models/User/User";
 import { Comment, type CommentDTO, type Commentable } from '@/models/Comment';
 import SkeletonLine from '../Skeletons/SkeletonLine';
 import toast from 'react-hot-toast';

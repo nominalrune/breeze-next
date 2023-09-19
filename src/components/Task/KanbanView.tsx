@@ -1,5 +1,5 @@
 import { TaskDTO } from '@/models/Task';
-import { UserDTO } from '@/models/User';
+import { UserDTO } from '@/models/User/User';
 import { useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from 'react-beautiful-dnd';
 import { IndexList } from './IndexList';

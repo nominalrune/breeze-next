@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { axios } from '@/lib/axios';
+import api from '@/lib/axios';
 import type { TaskDTO, Subtask } from '@/models/Task';
-import type { User, UserDTO } from '@/models/User';
+import type { User, UserDTO } from '@/models/User/User';
 import TextInput from '@/components/Inputs/TextInput';
 import Button from '@/components/Buttons/Button';
 
@@ -13,15 +13,15 @@ import Spinner from '@/components/Skeletons/Spinner';
 import { TaskTree } from '@/components/Task/Tree';
 import { toast } from 'react-hot-toast';
 
-export function Show({ user }: { user: UserDTO|undefined; }) {
+export default function Show({ user }: { user: UserDTO|undefined; }) {
 	const [task, setTask] = useState<TaskDTO | undefined>();
 	const [isEditing, setIsEditing] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { taskId } = useParams();
 
 	useEffect(() => {
-		axios.get('/tasks/' + taskId).then((res) => {
-			setTask(res.data);
+		api().get('/tasks/' + taskId).then(async(res) => {
+			setTask(await res.json());
 		});
 	}, [taskId]);
 
@@ -34,8 +34,8 @@ export function Show({ user }: { user: UserDTO|undefined; }) {
 	async function handleSubmit(newTask: TaskDTO) {
 		setIsSubmitting(true);
 		try {
-			const res = await axios.put('/tasks/' + taskId, newTask);
-			setTask(()=>({ ...newTask, ...res.data }));
+			const data = await (await api().put('/tasks/' + taskId, newTask)).json();
+			setTask(()=>({ ...newTask, ...data }));
 			setIsEditing(false);
 		} finally {
 			setIsSubmitting(false);

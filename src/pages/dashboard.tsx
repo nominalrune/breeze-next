@@ -1,5 +1,5 @@
 import AppLayout from '@/Layouts/AppLayout'
-import type{ UserDTO } from '@/models/User'
+import type{ UserDTO } from '@/models/User/User'
 const Dashboard = ({user}:{user?:UserDTO}) => {
     return (
 

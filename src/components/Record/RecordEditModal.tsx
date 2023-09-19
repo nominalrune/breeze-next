@@ -1,9 +1,9 @@
 import { RecordDTO } from '@/models/Record';
 import { useState } from 'react';
 import NestedForm from '../Inputs/NestedForm';
-import { UserDTO } from '@/models/User';
+import { UserDTO } from '@/models/User/User';
 import { RecordCreateDTO } from '@/models/Record';
-import { api } from '@/lib/axios';
+import api from '@/lib/axios';
 interface Props {
 	record?: RecordDTO | RecordCreateDTO,
 	user: UserDTO,
@@ -13,14 +13,14 @@ interface Props {
 export default function RecordEditModal({ record, user, close, onSuccess }: Props) {
 	function handleSubmit(item: RecordCreateDTO | Omit<RecordDTO, 'created_at' | 'updated_at'>) {
 		if ('id' in item && item.id) {
-			return api().put(`/records/${item.id}`, item).then((res) => {
+			return api().put(`/records/${item.id}`, item).then(async(res) => {
 				close();
-				onSuccess && onSuccess(res.data);
+				onSuccess && onSuccess(await res.json());
 			});
 		} else {
-			return api().post(`/records`, item).then((res) => {
+			return api().post(`/records`, item).then(async(res) => {
 				close();
-				onSuccess && onSuccess(res.data);
+				onSuccess && onSuccess(await res.json());
 			});
 		}
 	}

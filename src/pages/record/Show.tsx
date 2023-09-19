@@ -1,17 +1,17 @@
 import {useEffect,useState} from 'react';
 import { useParams } from 'react-router-dom';
-import {axios} from '@/lib/axios';
+import api from '@/lib/axios';
 import { Record, type RecordDTO } from '@/models/Record';
 // import type {AuthParam} from '@/models/User';
 import { Comments } from '@/components/Comments/Comments';
 import { Comment } from '@/models/Comment';
-export function Show({user}:AuthParam){
+export default function Show({user}:AuthParam){
 	const [record,setRecord]=useState<Record>();
 	let { recordId } = useParams();
 	function update(){
-		axios.get('/records/'+recordId).then(res=>{
+		api().get('/records/'+recordId).then(async res=>{
 			console.log({res})
-			setRecord(Record.fromDTO(res.data));
+			setRecord(Record.fromDTO(await res.json()));
 		})
 	}
 	useEffect(()=>{

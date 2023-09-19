@@ -1,7 +1,7 @@
-import {axios} from '@/lib/axios';
+import api from '@/lib/axios';
 import type { Record, RecordDTO } from './Record';
 import type { TaskDTO } from './Task';
-import type { User, UserDTO } from './User';
+import type { User, UserDTO } from './User/User';
 
 
 export type Commentable= TaskDTO | RecordDTO;
@@ -20,13 +20,13 @@ export interface CommentDTO<T extends Commentable>{
 export class Comment<T extends Commentable>{
 	public type = "App\\Models\\Comment";
 	public static create<T extends Commentable>(data:Partial<CommentDTO<T>>){
-		return axios.post('/comments', data);
+		return api().post('/comments', data);
 	}
 	public static update<T extends Commentable>(data:CommentDTO<T>){
-		return axios.put('/comments/'+data.id, data);
+		return api().put('/comments/'+data.id, data);
 	}
 	public static delete<T extends Commentable>(data:Partial<CommentDTO<T>>){
-		return axios.delete('/comments/'+data.id);
+		return api().delete('/comments/'+data.id);
 	}
 
 	id: number;

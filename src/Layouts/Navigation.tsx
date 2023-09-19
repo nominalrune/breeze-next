@@ -1,6 +1,6 @@
 import ApplicationLogo from '@/components/ApplicationLogo';
 import Dropdown from '@/components/Dropdown';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import NavLink from '@/components/NavLink';
 // import { NavLink } from "react-router-dom";
@@ -8,12 +8,12 @@ import ResponsiveNavLink, {
 	ResponsiveNavButton,
 } from '@/components/ResponsiveNavLink';
 import { DropdownButton } from '@/components/DropdownLink';
-import { useAuthContext } from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 export default function Navigation() {
-	const { user, logout } = useAuthContext();
+	const { user, logout } = useAuth();
 	const [open, setOpen] = useState(false);
 	useEffect(() => {
 		console.log({ user });

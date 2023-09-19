@@ -4,10 +4,10 @@ import { redirect } from 'react-router-dom';
 // import create from '@/models/Task/create';
 
 import type {Property} from '@/components/Inputs/EditForm';
-import type {AuthParam} from '@/models/User';
+import type {AuthParam} from '@/models/User/User';
 
 
-export function Create({user}:AuthParam) {
+export default function Create({user}:AuthParam) {
     const [errors, setErrors]=useState<any>()
     function handleSuccess(res:{data:{data:any,url:string}}) {
         console.log("handleSuccess",res)

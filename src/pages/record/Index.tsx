@@ -3,23 +3,23 @@ import { FloatingActionButton } from '@/components/Buttons/FloatingActionButton'
 import type { Record, RecordDTO } from '@/models/Record';
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { axios, csrf } from '@/lib/axios';
+import api from '@/lib/axios';
 import { useMonth } from '@/hooks/useMonth';
 import MonthSelector from '@/components/MonthSelector';
 import { Comments } from '@/components/Comments/Comments';
-import { useAuthContext } from '@/hooks/useAuth';
+import useUser from '@/hooks/useUser';
 import SkeletonCard from '@/components/Skeletons/SkeletonCard';
 import { FiPlus } from 'react-icons/fi';
 import RecordEditModal from '@/components/Record/RecordEditModal';
 import { Dialog } from '@/components/Modals/Dialog';
 import Main from '@/Layouts/Main';
 
-export function Index() {
-	const { user } = useAuthContext();
+export default function Index() {
+	const user = useUser(state => state.user);
 	const [records, setRecords] = useState<RecordDTO[] | undefined>();
 	const { month, setNextMonth, setPrevMonth } = useMonth(new Date());
 	function update() {
-		axios.get<RecordDTO[]>(`/records?month=${month.getFullYear()}-${(month.getMonth() + 1).toString().padStart(2, "0")}`).then(({ data }) => {
+		api().get<RecordDTO[]>(`/records?month=${month.getFullYear()}-${(month.getMonth() + 1).toString().padStart(2, "0")}`).then(({ data }) => {
 			console.log({ data });
 			setRecords(data);
 		});

@@ -1,5 +1,5 @@
 import type { TaskDTO } from './Task';
-import type { UserDTO } from './User';
+import type { UserDTO } from './User/User';
 import type { CommentDTO } from './Comment';
 
 export interface RecordDTO {

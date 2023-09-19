@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { axios } from '@/lib/axios';
+import api from '@/lib/axios';
 // import type { AuthParam } from '@/models/User';
 import type { RecordDTO } from '@/models/Record';
 import type { TaskDTO } from '@/models/Task';
@@ -18,7 +18,7 @@ import { useMonth } from '@/hooks/useMonth';
 
 import jaLocale from '@fullcalendar/core/locales/ja';
 import { Modal, ModalProps } from '@/components/Modals/Modal';
-import type { UserDTO } from '@/models/User';
+import type { UserDTO } from '@/models/User/User';
 import Main from '@/Layouts/Main';
 import { type EventImpl } from '@fullcalendar/core/internal';
 
@@ -31,14 +31,14 @@ interface EventClickInfo<T> extends EventClickArg {
 	// view: any,
 }
 
-export function Index({ user }: { user: UserDTO | undefined; }) {
+export default function Index({ user }: { user: UserDTO | undefined; }) {
 	const [events, setEvents] = useState<CalendarEntry[]>([]);
 	const params = Object.fromEntries([...new URL(location.href).searchParams.entries()]);
 	const { month, setNextMonth, setPrevMonth } = useMonth(params.start ? new Date(params.start) : new Date());
 	const [calendarApi, setCalendarApi] = useState<CalendarApi>();
 	useEffect(() => {
 		const url = encodeURI(`/calendar?display_type=month&month=${month.getFullYear()}-${(month.getMonth() + 1).toString().padStart(2, "0")}`);
-		axios.get<CalendarEntry[]>(url).then(({ data }) => {
+		api().get<CalendarEntry[]>(url).then(({ data }) => {
 			console.log("fetched:", data);
 			setEvents(data);
 		});

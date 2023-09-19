@@ -8,7 +8,7 @@ import TaskService from '@/services/TaskService';
 import { toast } from 'react-hot-toast';
 
 
-export function Create() {
+export default function Create() {
 	const taskService = new TaskService();
 	const navigate = useNavigate();
 	const [errors, setErrors] = useState<any>();

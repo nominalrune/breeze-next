@@ -4,12 +4,12 @@ import Button from '@/components/Buttons/PrimaryButton'
 import Input from '@/components/Input'
 import InputError from '@/components/Inputs/InputError'
 import Label from '@/components/Label'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { AuthService, AuthContext } from '@/services/AuthService';
 import React, { ChangeEvent, useState } from 'react'
-import {useAuthContext} from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 const Register = () => {
-    const { register } = useAuthContext();
+    const { register } = useAuth();
 
 
     const [name, setName] = useState('')
@@ -27,7 +27,6 @@ const Register = () => {
             email,
             password,
             password_confirmation: passwordConfirmation,
-			passphrase
         },
         '/dashboard',)
     }
@@ -54,7 +53,7 @@ const Register = () => {
                             autoFocus
                         />
 
-                        <InputError messages={errors?.name} className="mt-2" />
+                        <InputError message={errors?.name} className="mt-2" />
                     </div>
 
                     {/* Email Address */}
@@ -70,7 +69,7 @@ const Register = () => {
                             required
                         />
 
-                        <InputError messages={errors?.email} className="mt-2" />
+                        <InputError message={errors?.email} className="mt-2" />
                     </div>
 
                     {/* Password */}
@@ -88,7 +87,7 @@ const Register = () => {
                         />
 
                         <InputError
-                            messages={errors?.password}
+                            message={errors?.password}
                             className="mt-2"
                         />
                     </div>
@@ -111,7 +110,7 @@ const Register = () => {
                         />
 
                         <InputError
-                            messages={errors?.password_confirmation}
+                            message={errors?.password_confirmation}
                             className="mt-2"
                         />
                     </div>

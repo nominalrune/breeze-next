@@ -5,12 +5,12 @@ import Button from '@/components/Buttons/PrimaryButton';
 import Input from '@/components/Input';
 import InputError from '@/components/Inputs/InputError';
 import Label from '@/components/Label';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuthContext} from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 const Login = ({ redirectIfAuthenticated }: { redirectIfAuthenticated?: string; }) => {
-	const { login, user } = useAuthContext();
+	const { login } = useAuth();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [shouldRemember, setShouldRemember] = useState(false);

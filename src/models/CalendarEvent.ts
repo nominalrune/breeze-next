@@ -1,4 +1,4 @@
-import type { UserDTO } from './User';
+import type { UserDTO } from './User/User';
 import type {EventInput} from '@fullcalendar/core';
 
 export type CalendarEventInput=EventInput&Omit<CalendarEvent,'id'|"toEvent"|"class">&{end:Date,start:Date,toFormData:()=>CalendarEventDTO};

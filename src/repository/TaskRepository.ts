@@ -1,6 +1,6 @@
 import { Task, TaskDTO } from '@/models/Task';
 import { useState } from 'react';
-import {api} from '@/lib/axios';
+import api from '@/lib/axios';
 
 export default class TaskRepository {
 	private static instance: TaskRepository
@@ -26,16 +26,17 @@ export default class TaskRepository {
 	public get(id: number): Task|undefined {
 		return this.tasks.find(task => task.id === id);
 	}
-	private fetchTasks(){
+	private async fetchTasks(){
 		if(this.loading) return;
-		api().get('/tasks').then(response => {
-			this.setTasks(response.data.map((task: TaskDTO) => new Task(task)));
+		api().get('/tasks').then(async(response) => {
+			this.setTasks((await response.json()).map((task: TaskDTO) => Task.fromDTO(task)));
 		}).finally(()=>this.loading=undefined);
 	};
 	public async createTask(task: Task): Promise<Task> {
-		api().post('/tasks', task.toDTO()).then(response => {
-		this.setTasks([...this.tasks, task]);
-		})
+		const resp = await api().post('/tasks', task.toFormData());
+		const _task=Task.fromDTO(await resp.json());
+		this.setTasks([...this.tasks, _task]);
+		return _task;
 	}
 	public updateTask(task: Task): void {
 		this.setTasks(this.tasks.map(t => t.id === task.id ? task : t));

@@ -1,8 +1,8 @@
-import NestedForm,{type OnClick,DataModel} from '@/components/Inputs/NestedForm';
-import { useAuthContext} from '@/hooks/useAuth';
+import NestedForm, { type OnClick, DataObj } from '@/components/Inputs/NestedForm';
+import useAuth from '@/hooks/useAuth';
 export const LoginForm = ({ redirectIfAuthenticated }: { redirectIfAuthenticated?: string; }) => {
-	const auth = useAuthContext();
-	const prop=[
+	const auth = useAuth();
+	const prop = [
 		{
 			name: "email",
 			type: "email",
@@ -20,17 +20,17 @@ export const LoginForm = ({ redirectIfAuthenticated }: { redirectIfAuthenticated
 		},
 	] as const;
 
-	const submit:OnClick<DataModel<typeof prop,3>> =(data, functions)=> {
-		console.log({auth})
-		auth.login({email:data.email, password:data.password, remember:data.remember});
+	const submit: OnClick<typeof prop> = (data) => {
+		console.log({ auth });
+		return auth.login({ email: data.email, password: data.password, remember: data.remember });
 	};
 
 	return (
 		<div className='bg-white rounded-md p-6 px-9'>
-		<NestedForm
-		properties={prop}
-		primaryAction={{label:"Login",onClick:submit,}}
+			<NestedForm
+				properties={prop}
+				primaryAction={{ label: "Login", onClick: submit, }}
 
-		/></div>
+			/></div>
 	);
 };

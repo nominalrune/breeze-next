@@ -1,4 +1,4 @@
-import { User, type UserDTO } from './User';
+import { User, type UserDTO } from './User/User';
 import type { Comment, CommentDTO } from './Comment';
 import { BaseFormData } from './BaseViewModel';
 import BaseModel from './BaseModel';
@@ -57,6 +57,7 @@ export interface Subtask {
 	subtasks: Subtask[],
 }
 export interface TaskDTO {
+	kind?: "App\\Models\\Task";
 	id: number,
 	title: string,
 	description?: string,
