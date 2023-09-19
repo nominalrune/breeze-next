@@ -1,11 +1,10 @@
 import type { UserDTO } from './User';
 import type {EventInput} from '@fullcalendar/core';
-import type { OmitMany } from '../utiltype';
 
-export type CalendarEventInput=EventInput&OmitMany<CalendarEvent,['id',"toEvent"]>&{end:Date,start:Date,toFormData:()=>CalendarEventDTO};
+export type CalendarEventInput=EventInput&Omit<CalendarEvent,'id'|"toEvent"|"class">&{end:Date,start:Date,toFormData:()=>CalendarEventDTO};
 
 export class CalendarEvent {
-	public class = "App\\Models\\CalendarEvent" as "App\\Models\\CalendarEvent";
+	public class = "App\\Models\\CalendarEvent" as const;
 	public id?: number;
 	public title: string;
 	public state:string;
